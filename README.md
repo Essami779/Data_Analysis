@@ -2184,14 +2184,14 @@ erDiagram
     users {
         BIGINT id PK
         VARCHAR name
-        VARCHAR email UK
+        VARCHAR email
         VARCHAR password
         VARCHAR profile_image
         VARCHAR thumbnail
-        TINYINT status
-        ENUM role
+        INT status
+        VARCHAR role
         VARCHAR phone_number
-        TINYINT must_change_password
+        INT must_change_password
         TIMESTAMP deleted_at
         TIMESTAMP created_at
         TIMESTAMP updated_at
@@ -2199,11 +2199,11 @@ erDiagram
 
     %% =================== STUDENT DETAILS ===================
     student_details {
-        BIGINT user_id PK_FK
-        VARCHAR university_id UK
+        BIGINT user_id PK
+        VARCHAR university_id
         VARCHAR major
         INT level
-        DOUBLE gpa
+        FLOAT gpa
         TIMESTAMP created_at
         TIMESTAMP updated_at
     }
@@ -2213,7 +2213,7 @@ erDiagram
         VARCHAR course_id PK
         VARCHAR title
         TEXT description
-        BIGINT doctor_id FK
+        BIGINT doctor_id
         INT credit_hours
         VARCHAR department
         TIMESTAMP created_at
@@ -2225,7 +2225,7 @@ erDiagram
         VARCHAR material_id PK
         VARCHAR course_id FK
         VARCHAR title
-        ENUM type
+        VARCHAR type
         TEXT file_url
         VARCHAR file_path
         VARCHAR file_size
@@ -2248,7 +2248,7 @@ erDiagram
         TEXT question_text
         TEXT options
         VARCHAR correct_answer
-        ENUM difficulty_level
+        VARCHAR difficulty_level
         INT unit_number
         TIMESTAMP created_at
         TIMESTAMP updated_at
@@ -2261,7 +2261,7 @@ erDiagram
         TEXT content
         BIGINT author_id FK
         TIMESTAMP date_posted
-        ENUM target_audience
+        VARCHAR target_audience
         VARCHAR image_url
         VARCHAR image_extension
         TIMESTAMP created_at
@@ -2272,7 +2272,7 @@ erDiagram
     sasp_chat_rooms {
         VARCHAR room_id PK
         VARCHAR title
-        ENUM type
+        VARCHAR type
         BIGINT created_by FK
         TIMESTAMP created_at
         TIMESTAMP updated_at
@@ -2287,7 +2287,7 @@ erDiagram
         TEXT message_text
         VARCHAR media_type
         VARCHAR media_path
-        TIMESTAMP timestamp
+        TIMESTAMP sent_at
         INT is_synced
         TIMESTAMP created_at
         TIMESTAMP updated_at
@@ -2309,8 +2309,8 @@ erDiagram
     payments {
         VARCHAR payment_id PK
         BIGINT student_id FK
-        DOUBLE amount
-        ENUM payment_status
+        FLOAT amount
+        VARCHAR payment_status
         TIMESTAMP payment_date
         TEXT receipt_url
         INT is_synced
@@ -2496,7 +2496,6 @@ erDiagram
     roles ||--o{ role_has_permissions : "has"
     users ||--o{ model_has_roles : "has role"
 ```
-
 ---
 
 # 📌 القسم الخامس: بنية التطبيق (Application Architecture Layer)
