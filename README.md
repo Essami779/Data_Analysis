@@ -1088,922 +1088,1237 @@ lib/
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# 🏗️ المخططات الهندسية — UML Diagrams
+# 🏗️ وثيقة المخططات الهندسية — UML Diagrams
 ## مشروع SASP — بوابة الطالب الأكاديمية الذكية
-> **المنهجية:** OOAD | **صيغة الرسم:** Mermaid.js (تُرسم مباشرةً في VS Code / GitHub / Obsidian)
+### Smart Academic Student Portal — جامعة سبأ
+
+> **تاريخ الإصدار:** 27 يونيو 2026 | **الإصدار:** 1.0
+> **المنهجية:** Object-Oriented Systems Analysis & Design (OOAD)
+> **صيغة الرسم:** PlantUML & Mermaid.js
 
 ---
 
-# 1️⃣ مخطط حالات الاستخدام (Use-Case Diagram)
+# 📌 القسم الأول: النمذجة الوظيفية (Functional Modeling)
 
-> يوضح الفاعلين الأربعة وحالات الاستخدام الرئيسية مع علاقات Include و Extend
+---
 
-```mermaid
-flowchart TD
-    subgraph ACTORS["👥 الفاعلون — Actors"]
-        STU("🎓 الطالب\nStudent")
-        DOC("👨‍⚕️ الدكتور\nDoctor")
-        ADM("🏢 الإدارة\nAdmin")
-        SPA("👑 الإدارة العليا\nSuperAdmin")
-        SYS("⚙️ نظام المزامنة\nSync Engine")
-    end
+## 1️⃣ مخطط حالات الاستخدام (Use-Case Diagram)
 
-    subgraph AUTH["🔐 المصادقة — Authentication"]
-        UC_LOGIN["تسجيل الدخول\nLogin"]
-        UC_FORCE["تغيير المرور الإجباري\nForced Change Password\n⟪extend⟫"]
-        UC_PASS["تغيير كلمة المرور\nChange Password"]
-        UC_LOGOUT["تسجيل الخروج\nLogout"]
-    end
+### 📋 الشرح:
+يوضح هذا المخطط الفاعلين الأربعة الرئيسيين في نظام SASP (الطالب، الدكتور، الإدارة، الإدارة العليا) وحالات الاستخدام الخاصة بكل منهم. يتضمن علاقات `<<include>>` للعمليات المشتركة الإلزامية مثل المصادقة، وعلاقات `<<extend>>` للوظائف الاختيارية مثل تغيير كلمة المرور الإجبارية للطالب.
 
-    subgraph SYNC["🔄 المزامنة — Sync"]
-        UC_SYNC["مزامنة البيانات\nSync Data"]
-        UC_PUSH["رفع المسودات\nPush Drafts\n⟪include⟫"]
-    end
+```plantuml
+@startuml SASP_UseCaseDiagram
+!theme blueprint
+title مخطط حالات الاستخدام — نظام SASP
 
-    subgraph CURRICULUM["📚 المناهج — Curriculum"]
-        UC_PDF["تصفح الكتب PDF\nBrowse PDF Books"]
-        UC_AUDIO["الكتب الصوتية\nAudio Books"]
-        UC_QUIZ["بنك الأسئلة\nQuestion Bank"]
-        UC_PERF["تقرير الأداء\nPerformance Report\n⟪include⟫"]
-    end
+skinparam actorStyle awesome
+skinparam backgroundColor #1a1a2e
+skinparam usecase {
+  BackgroundColor #16213e
+  BorderColor #0f3460
+  FontColor #e0e0e0
+  ArrowColor #e94560
+}
+skinparam actor {
+  BackgroundColor #0f3460
+  BorderColor #e94560
+  FontColor #e0e0e0
+}
+skinparam note {
+  BackgroundColor #0f3460
+  BorderColor #e94560
+  FontColor white
+}
 
-    subgraph ACADEMIC["📊 الأكاديمي — Academic"]
-        UC_GRADES["عرض الدرجات\nView Results"]
-        UC_ENTER["إدخال الدرجات\nEnter Grades"]
-        UC_PAY["متابعة المدفوعات\nTrack Payments"]
-        UC_REC["رفع إيصال الدفع\nUpload Receipt"]
-        UC_APPROVE["الموافقة على الدفع\nApprove Payments"]
-        UC_COMP["تقديم شكوى\nFile Complaint"]
-        UC_RESOLVE["حل الشكاوى\nResolve Complaints"]
-    end
+left to right direction
 
-    subgraph COMM["💬 التواصل — Communication"]
-        UC_FORUM["منتدى الطلاب\nStudent Forum"]
-        UC_CHAT["دردشة خاصة\nPrivate Chat"]
-        UC_MEDIA["إرسال وسائط\nSend Media\n⟪include⟫"]
-        UC_ANNOUNCE["نشر الإعلانات\nPost Announcements"]
-    end
+' ========== ACTORS ==========
+actor "🎓 الطالب\n(Student)" as Student
+actor "👨‍⚕️ الدكتور\n(Doctor)" as Doctor
+actor "🏢 الإدارة\n(Admin)" as Admin
+actor "👑 الإدارة العليا\n(SuperAdmin)" as SuperAdmin
+actor "⚙️ نظام المزامنة\n(Sync Engine)" as SyncEngine <<system>>
 
-    subgraph GRAD["🎓 التخرج — Graduation"]
-        UC_RESEARCH["رفع تقرير بحثي\nUpload Research"]
-        UC_REVIEW["مراجعة التقارير\nReview Reports"]
-        UC_GRAD["مشاريع التخرج\nGraduation Projects"]
-    end
+' ========== SYSTEM BOUNDARY ==========
+rectangle "نظام SASP" {
 
-    subgraph ADMIN_PANEL["⚙️ لوحة التحكم — Admin Panel"]
-        UC_STUDENTS["إدارة الطلاب\nManage Students"]
-        UC_DOCTORS["إدارة الدكاترة\nManage Doctors"]
-        UC_MATS["رفع المواد\nUpload Materials"]
-        UC_ROLES["إدارة الصلاحيات\nManage Roles"]
-        UC_BACKUP["النسخ الاحتياطي\nBackup System"]
-        UC_CUSTOM["تخصيص التطبيق\nCustomize App"]
-        UC_SETTINGS["إعدادات النظام\nSystem Settings"]
-    end
+  ' -- Authentication --
+  usecase "تسجيل الدخول\n(Login)" as UC_Login
+  usecase "تغيير كلمة المرور\n(Change Password)" as UC_ChangePass
+  usecase "تغيير المرور الإجباري\n(Forced Change)" as UC_ForcedChange
+  usecase "تسجيل الخروج\n(Logout)" as UC_Logout
 
-    %% Student associations
-    STU --> UC_LOGIN
-    STU --> UC_SYNC
-    STU --> UC_PDF
-    STU --> UC_AUDIO
-    STU --> UC_QUIZ
-    STU --> UC_GRADES
-    STU --> UC_PAY
-    STU --> UC_REC
-    STU --> UC_COMP
-    STU --> UC_FORUM
-    STU --> UC_CHAT
-    STU --> UC_RESEARCH
+  ' -- Sync --
+  usecase "مزامنة البيانات\n(Sync Data)" as UC_Sync
+  usecase "رفع المسودات المحلية\n(Push Drafts)" as UC_PushDrafts
 
-    %% Doctor associations
-    DOC --> UC_LOGIN
-    DOC --> UC_ENTER
-    DOC --> UC_MATS
-    DOC --> UC_REVIEW
-    DOC --> UC_CHAT
-    DOC --> UC_GRAD
+  ' -- Curriculum --
+  usecase "تصفح الكتب PDF\n(Browse PDF Books)" as UC_PDF
+  usecase "الاستماع للكتب الصوتية\n(Audio Books)" as UC_Audio
+  usecase "بنك الأسئلة والاختبارات\n(Question Bank)" as UC_Quiz
+  usecase "عرض تقرير الأداء\n(Performance Report)" as UC_Report
 
-    %% Admin associations
-    ADM --> UC_LOGIN
-    ADM --> UC_STUDENTS
-    ADM --> UC_DOCTORS
-    ADM --> UC_ANNOUNCE
-    ADM --> UC_APPROVE
-    ADM --> UC_RESOLVE
-    ADM --> UC_MATS
-    ADM --> UC_SETTINGS
+  ' -- Academic Results --
+  usecase "عرض درجاتي\n(My Results)" as UC_MyResults
+  usecase "إدخال الدرجات\n(Enter Grades)" as UC_EnterGrades
 
-    %% SuperAdmin associations
-    SPA --> UC_LOGIN
-    SPA --> UC_ROLES
-    SPA --> UC_BACKUP
-    SPA --> UC_CUSTOM
-    SPA --> UC_STUDENTS
+  ' -- Payments --
+  usecase "متابعة المدفوعات\n(Track Payments)" as UC_Payments
+  usecase "رفع إيصال الدفع\n(Upload Receipt)" as UC_Receipt
+  usecase "الموافقة على المدفوعات\n(Approve Payments)" as UC_ApprovePayments
 
-    %% Sync Engine
-    SYS --> UC_SYNC
-    SYS --> UC_PUSH
+  ' -- Complaints --
+  usecase "تقديم شكوى\n(File Complaint)" as UC_Complaint
+  usecase "حل الشكاوى\n(Resolve Complaints)" as UC_ResolveComplaint
 
-    %% include / extend
-    UC_LOGIN -.->|include| UC_SYNC
-    UC_QUIZ -.->|include| UC_PERF
-    UC_CHAT -.->|include| UC_MEDIA
-    UC_REC -.->|include| UC_PUSH
-    UC_COMP -.->|include| UC_PUSH
-    UC_FORCE -.->|extend| UC_LOGIN
+  ' -- Chat --
+  usecase "منتدى الطلاب\n(Student Forum)" as UC_Forum
+  usecase "دردشة خاصة\n(Private Chat)" as UC_PrivateChat
+  usecase "إرسال وسائط\n(Send Media)" as UC_Media
 
-    style ACTORS fill:#1a1a2e,stroke:#e94560,color:#fff
-    style AUTH fill:#16213e,stroke:#0f3460,color:#e0e0e0
-    style SYNC fill:#16213e,stroke:#0f3460,color:#e0e0e0
-    style CURRICULUM fill:#16213e,stroke:#0f3460,color:#e0e0e0
-    style ACADEMIC fill:#16213e,stroke:#0f3460,color:#e0e0e0
-    style COMM fill:#16213e,stroke:#0f3460,color:#e0e0e0
-    style GRAD fill:#16213e,stroke:#0f3460,color:#e0e0e0
-    style ADMIN_PANEL fill:#16213e,stroke:#0f3460,color:#e0e0e0
+  ' -- Graduation & Research --
+  usecase "رفع تقرير بحثي\n(Upload Research)" as UC_Research
+  usecase "مراجعة التقارير\n(Review Reports)" as UC_ReviewReport
+  usecase "إدارة مشاريع التخرج\n(Graduation Projects)" as UC_Graduation
+
+  ' -- Admin Panel --
+  usecase "إدارة الطلاب\n(Manage Students)" as UC_ManageStudents
+  usecase "إدارة الدكاترة\n(Manage Doctors)" as UC_ManageDoctors
+  usecase "نشر الإعلانات\n(Post Announcements)" as UC_Announcements
+  usecase "رفع المواد التعليمية\n(Upload Materials)" as UC_Materials
+  usecase "إعدادات النظام\n(System Settings)" as UC_Settings
+  usecase "إدارة الأدوار والصلاحيات\n(Manage Roles)" as UC_Roles
+  usecase "النسخ الاحتياطية\n(Backup System)" as UC_Backup
+  usecase "تخصيص التطبيق\n(Customize App)" as UC_Customize
+}
+
+' ========== STUDENT ASSOCIATIONS ==========
+Student --> UC_Login
+Student --> UC_Sync
+Student --> UC_PDF
+Student --> UC_Audio
+Student --> UC_Quiz
+Student --> UC_MyResults
+Student --> UC_Payments
+Student --> UC_Receipt
+Student --> UC_Complaint
+Student --> UC_Forum
+Student --> UC_PrivateChat
+Student --> UC_Research
+Student --> UC_ChangePass
+
+' ========== DOCTOR ASSOCIATIONS ==========
+Doctor --> UC_Login
+Doctor --> UC_EnterGrades
+Doctor --> UC_Materials
+Doctor --> UC_ReviewReport
+Doctor --> UC_PrivateChat
+Doctor --> UC_Graduation
+
+' ========== ADMIN ASSOCIATIONS ==========
+Admin --> UC_Login
+Admin --> UC_ManageStudents
+Admin --> UC_ManageDoctors
+Admin --> UC_Announcements
+Admin --> UC_ApprovePayments
+Admin --> UC_ResolveComplaint
+Admin --> UC_Materials
+Admin --> UC_Graduation
+Admin --> UC_Settings
+
+' ========== SUPERADMIN ASSOCIATIONS ==========
+SuperAdmin --> UC_Login
+SuperAdmin --> UC_ManageStudents
+SuperAdmin --> UC_ManageDoctors
+SuperAdmin --> UC_Roles
+SuperAdmin --> UC_Backup
+SuperAdmin --> UC_Customize
+SuperAdmin --> UC_Settings
+
+' ========== SYNC ENGINE ==========
+SyncEngine --> UC_Sync
+SyncEngine --> UC_PushDrafts
+
+' ========== INCLUDE RELATIONSHIPS ==========
+UC_Login ..> UC_Sync : <<include>>
+UC_Quiz ..> UC_Report : <<include>>
+UC_PrivateChat ..> UC_Media : <<include>>
+UC_Receipt ..> UC_PushDrafts : <<include>>
+UC_Complaint ..> UC_PushDrafts : <<include>>
+
+' ========== EXTEND RELATIONSHIPS ==========
+UC_ForcedChange ..> UC_Login : <<extend>>\ncondition: أول دخول للطالب
+UC_ChangePass ..> UC_Login : <<extend>>
+
+note right of UC_ForcedChange
+  يُفعَّل فقط عندما تكون
+  كلمة مرور الطالب
+  هي الافتراضية (123456)
+end note
+
+note bottom of UC_Sync
+  تشمل: سحب الإعلانات،
+  المواد، الدرجات، المدفوعات،
+  الأسئلة، الكتب
+end note
+
+@enduml
 ```
 
 ---
 
-# 2️⃣ مخطط النشاط (Activity Diagram) — دورة تسجيل الدخول والمزامنة
+## 2️⃣ مخطط النشاط (Activity Diagram) — عملية المزامنة الكاملة
 
-> سير العمل الكامل مع مسارات السباحة (Swimlanes) لفصل مهام الطالب عن Flutter عن Laravel
+### 📋 الشرح:
+يوضح هذا المخطط سير العمل الكامل لأهم عملية في نظام SASP وهي **دورة تسجيل الدخول والمزامنة**. يستخدم Swimlanes لفصل مهام الطالب عن نظام Flutter عن خادم Laravel، مع معالجة سيناريو العمل بدون إنترنت.
 
-```mermaid
-flowchart TD
-    START([🟢 فتح التطبيق]) --> LOAD_SETTINGS[تحميل إعدادات السيرفر\nمن SQLite]
+```plantuml
+@startuml SASP_ActivityDiagram
+!theme blueprint
+title مخطط النشاط — دورة تسجيل الدخول والمزامنة
 
-    LOAD_SETTINGS --> CHECK_TOKEN{يوجد توكن\nمحفوظ؟}
+skinparam backgroundColor #1a1a2e
+skinparam activity {
+  BackgroundColor #16213e
+  BorderColor #0f3460
+  FontColor #e0e0e0
+  ArrowColor #e94560
+  StartColor #e94560
+  EndColor #e94560
+  BarColor #e94560
+}
+skinparam swimlane {
+  TitleFontColor #e0e0e0
+  BorderColor #0f3460
+}
 
-    CHECK_TOKEN -->|لا| SHOW_LOGIN[عرض شاشة\nتسجيل الدخول]
-    CHECK_TOKEN -->|نعم| CHECK_VALID{التوكن\nصالح؟}
-    CHECK_VALID -->|لا| DELETE_TOKEN[حذف التوكن المنتهي] --> SHOW_LOGIN
-    CHECK_VALID -->|نعم| GOTO_HOME
+|#1a1a2e| 🎓 الطالب (User)|
+|#16213e| 📱 تطبيق Flutter|
+|#0f3460| ⚙️ Laravel Backend|
 
-    subgraph STUDENT_LANE["🎓 الطالب"]
-        INPUT_CREDS["إدخال بيانات الدخول\n(رقم أكاديمي / بريد + كلمة المرور)"]
-        PRESS_LOGIN["ضغط زر تسجيل الدخول"]
-        CHANGE_PASS_INPUT["إدخال كلمة المرور الجديدة"]
-        BROWSE["تصفح التطبيق ✅"]
-    end
+|🎓 الطالب (User)|
+start
+:فتح التطبيق;
 
-    subgraph FLUTTER_LANE["📱 تطبيق Flutter"]
-        VALIDATE["التحقق من المدخلات\nClient-Side Validation"]
-        CHECK_INTERNET{يوجد\nاتصال إنترنت؟}
-        CHECK_LOCAL{سبق تسجيل\nالدخول محلياً؟}
-        OFFLINE_LOGIN["تسجيل دخول محلي\nOffline Login Cache"]
-        OFFLINE_WARN["⚠️ وضع أوفلاين"]
-        SAVE_TOKEN["حفظ التوكن وبيانات\nالمستخدم في SQLite"]
-        CHECK_FORCE{must_change\npassword = true؟}
-        SHOW_FORCE["فتح شاشة تغيير\nالمرور الإجباري"]
-        START_SYNC["بدء المزامنة الشاملة"]
-        UPDATE_SQLITE["تحديث جداول SQLite\nبالبيانات الجديدة"]
-        CHECK_DRAFTS{توجد مسودات\nغير مُزامنة؟}
-        PUSH_DRAFTS["رفع المسودات للسيرفر\ncomplaints / messages / payments"]
-        UPDATE_SYNCED["تحديث is_synced = 1"]
-    end
+|📱 تطبيق Flutter|
+:تحميل إعدادات السيرفر\nمن SQLite المحلية;
+:عرض شاشة Splash;
 
-    subgraph LARAVEL_LANE["⚙️ Laravel Backend"]
-        CHECK_ID{هل المعرّف\nرقم أكاديمي؟}
-        SEARCH_STUDENT["البحث في student_details\nبالرقم الأكاديمي"]
-        SEARCH_EMAIL["البحث في users\nبالبريد الإلكتروني"]
-        VERIFY_PASS{كلمة المرور\nصحيحة؟}
-        RETURN_401_A["↩ 401 Unauthorized\nمستخدم غير موجود"]
-        RETURN_401_B["↩ 401 Unauthorized\nكلمة مرور خاطئة"]
-        CREATE_TOKEN["إنشاء Sanctum Token"]
-        RETURN_200["↩ 200 OK\n{token, user, role, must_change_password}"]
-        SAVE_PASS["تحديث كلمة المرور\nmust_change_password = 0"]
-        COLLECT_DATA["جمع بيانات المستخدم\nحسب الدور (Role-based)"]
-        RETURN_SYNC["↩ JSON شامل\n{settings, courses, materials,\nresults, payments, announcements}"]
-        SAVE_DRAFTS["حفظ المسودات\nفي قاعدة البيانات"]
-    end
+if (يوجد توكن محفوظ؟) then (نعم)
+  :التحقق من صلاحية التوكن;
+  if (التوكن صالح؟) then (نعم)
+    :الانتقال للشاشة الرئيسية;
+  else (لا)
+    :حذف التوكن المنتهي;
+    :عرض شاشة تسجيل الدخول;
+  endif
+else (لا)
+  :عرض شاشة تسجيل الدخول;
+endif
 
-    SHOW_LOGIN --> INPUT_CREDS
-    INPUT_CREDS --> PRESS_LOGIN
-    PRESS_LOGIN --> VALIDATE
-    VALIDATE --> CHECK_INTERNET
+|🎓 الطالب (User)|
+:إدخال بيانات الدخول\n(رقم أكاديمي / بريد إلكتروني\nوكلمة المرور);
+:الضغط على "تسجيل الدخول";
 
-    CHECK_INTERNET -->|لا - أوفلاين| CHECK_LOCAL
-    CHECK_LOCAL -->|نعم| OFFLINE_LOGIN --> OFFLINE_WARN --> GOTO_HOME
-    CHECK_LOCAL -->|لا| ERROR_NO_NET(["❌ يتطلب إنترنت\nللمرة الأولى"])
+|📱 تطبيق Flutter|
+:التحقق من صحة المدخلات\n(Client-Side Validation);
 
-    CHECK_INTERNET -->|نعم - متصل| CHECK_ID
-    CHECK_ID -->|رقم أكاديمي| SEARCH_STUDENT
-    CHECK_ID -->|بريد إلكتروني| SEARCH_EMAIL
-    SEARCH_STUDENT --> VERIFY_PASS
-    SEARCH_EMAIL --> VERIFY_PASS
-    VERIFY_PASS -->|لا - غير موجود| RETURN_401_A --> SHOW_ERR_A(["❌ البيانات غير صحيحة"])
-    VERIFY_PASS -->|لا - خطأ| RETURN_401_B --> SHOW_ERR_B(["❌ كلمة المرور خاطئة"])
-    VERIFY_PASS -->|نعم| CREATE_TOKEN --> RETURN_200
+if (هل هناك اتصال بالإنترنت؟) then (لا - وضع أوفلاين)
+  :البحث عن بيانات محفوظة\nفي SQLite المحلي;
+  if (تسجيل الدخول من قبل؟) then (نعم)
+    :تسجيل الدخول محلياً\n(Offline Login Cache);
+    :عرض إشعار "وضع أوفلاين";
+    :الانتقال للشاشة الرئيسية\nبالبيانات المحلية;
+  else (لا)
+    :عرض خطأ:\n"يتطلب اتصالاً بالإنترنت\nللمرة الأولى";
+    stop
+  endif
+else (نعم - متصل)
 
-    RETURN_200 --> SAVE_TOKEN
-    SAVE_TOKEN --> CHECK_FORCE
-    CHECK_FORCE -->|نعم| SHOW_FORCE --> CHANGE_PASS_INPUT --> SAVE_PASS --> START_SYNC
-    CHECK_FORCE -->|لا| START_SYNC
+  :إرسال طلب POST /api/login\n{identifier, password};
 
-    START_SYNC --> COLLECT_DATA --> RETURN_SYNC
-    RETURN_SYNC --> UPDATE_SQLITE
-    UPDATE_SQLITE --> CHECK_DRAFTS
-    CHECK_DRAFTS -->|نعم| PUSH_DRAFTS --> SAVE_DRAFTS --> UPDATE_SYNCED --> GOTO_HOME
-    CHECK_DRAFTS -->|لا| GOTO_HOME
+  |⚙️ Laravel Backend|
+  :استقبال طلب المصادقة;
+  if (هل المعرّف رقم أكاديمي؟) then (نعم)
+    :البحث في student_details\nبالرقم الأكاديمي;
+  else (لا - بريد إلكتروني)
+    :البحث في users\nبالبريد الإلكتروني;
+  endif
 
-    GOTO_HOME["🏠 الشاشة الرئيسية"] --> BROWSE
+  if (المستخدم موجود؟) then (لا)
+    :إرجاع 401 Unauthorized;
+    |📱 تطبيق Flutter|
+    :عرض خطأ: "البيانات غير صحيحة";
+  else (نعم)
+    :التحقق من كلمة المرور\n(bcrypt verify);
+    if (كلمة المرور صحيحة؟) then (لا)
+      :إرجاع 401 Unauthorized;
+      |📱 تطبيق Flutter|
+      :عرض خطأ: "كلمة المرور خاطئة";
+    else (نعم)
+      :إنشاء Sanctum Token;
+      :إرجاع 200 OK\n{token, user, role,\nmust_change_password};
 
-    style STUDENT_LANE fill:#0f3460,stroke:#e94560,color:#fff
-    style FLUTTER_LANE fill:#16213e,stroke:#0f3460,color:#e0e0e0
-    style LARAVEL_LANE fill:#1a1a2e,stroke:#e94560,color:#e0e0e0
-    style START fill:#e94560,color:#fff,stroke:#e94560
-    style GOTO_HOME fill:#27ae60,color:#fff,stroke:#27ae60
-    style ERROR_NO_NET fill:#c0392b,color:#fff
-    style SHOW_ERR_A fill:#c0392b,color:#fff
-    style SHOW_ERR_B fill:#c0392b,color:#fff
+      |📱 تطبيق Flutter|
+      :حفظ التوكن وبيانات\nالمستخدم في SQLite;
+
+      if (must_change_password = true؟) then (نعم)
+        :فتح شاشة تغيير\nكلمة المرور الإجبارية;
+        |🎓 الطالب (User)|
+        :إدخال كلمة المرور الجديدة;
+        |📱 تطبيق Flutter|
+        :إرسال POST /api/change-password;
+        |⚙️ Laravel Backend|
+        :تحديث كلمة المرور\nوضبط must_change_password = 0;
+        |📱 تطبيق Flutter|
+      else (لا)
+      endif
+
+      :بدء عملية المزامنة الشاملة;
+      :إرسال GET /api/sync\nمع Bearer Token;
+
+      |⚙️ Laravel Backend|
+      :جمع جميع بيانات المستخدم\nحسب دوره (Role-based Filtering);
+      :إرجاع JSON شامل:\n{settings, courses, materials,\nannouncements, results,\npayments, complaints, questions};
+
+      |📱 تطبيق Flutter|
+      :فتح معاملة SQLite\n(Transaction);
+      :تحديث جميع جداول SQLite\nبالبيانات الجديدة;
+      :إغلاق المعاملة;
+
+      :البحث عن مسودات محلية\n(is_synced = 0);
+      if (توجد مسودات؟) then (نعم)
+        :إرسال POST /api/sync/messages;
+        :إرسال POST /api/sync/complaints;
+        :إرسال POST /api/sync/payments;
+        |⚙️ Laravel Backend|
+        :حفظ المسودات في قاعدة البيانات;
+        |📱 تطبيق Flutter|
+        :تحديث is_synced = 1\nللمسودات المرفوعة;
+      else (لا)
+      endif
+
+      :الانتقال للشاشة الرئيسية;
+
+      |🎓 الطالب (User)|
+      :تصفح التطبيق;
+    endif
+  endif
+endif
+
+stop
+@enduml
 ```
 
 ---
 
-# 3️⃣ مخطط الفئات (Class Diagram)
+# 📌 القسم الثاني: النمذجة الهيكلية (Structural Modeling)
 
-> الفئات الأساسية وعلاقات الإرث والتجميع والارتباط
+---
 
-```mermaid
-classDiagram
-    direction TB
+## 3️⃣ مخطط الفئات (Class Diagram)
 
-    class User {
-        <<abstract>>
-        +int id
-        +String name
-        +String email
-        +String password
-        +String profileImage
-        +boolean status
-        +Role role
-        +boolean mustChangePassword
-        +DateTime createdAt
-        +login(identifier, password) AuthToken
-        +logout() void
-        +changePassword(old, new) boolean
-        +updateProfile(data) boolean
-        +getRole() Role
-    }
+### 📋 الشرح:
+يوضح الفئات الأساسية في مجال مشكلة SASP مع خصائصها وعملياتها والعلاقات بينها. يتضمن التراتبية (Generalization) من `User` إلى الأدوار المختلفة، والتجميع (Aggregation) بين `Course` و`EducationalMaterial`، والارتباط (Association) بين مختلف الفئات.
 
-    class Student {
-        +String universityId
-        +String major
-        +int level
-        +double gpa
-        +getResults() List~Result~
-        +getPayments() List~Payment~
-        +submitComplaint(subject, desc) Complaint
-        +uploadReceipt(file) Payment
-        +startQuiz(courseId) Quiz
-        +syncData() SyncResult
-    }
+```plantuml
+@startuml SASP_ClassDiagram
+!theme blueprint
+title مخطط الفئات — نظام SASP
 
-    class Doctor {
-        +getStudentList() List~Student~
-        +enterGrade(studentId, courseId, grade) Result
-        +uploadMaterial(material) boolean
-        +reviewReport(reportId, status, feedback) boolean
-        +startPrivateChat(studentId) ChatRoom
-    }
+skinparam backgroundColor #1a1a2e
+skinparam class {
+  BackgroundColor #16213e
+  BorderColor #0f3460
+  FontColor #e0e0e0
+  ArrowColor #e94560
+  HeaderBackgroundColor #0f3460
+}
+skinparam note {
+  BackgroundColor #0f3460
+  BorderColor #e94560
+  FontColor white
+}
 
-    class Admin {
-        +createStudent(data) Student
-        +createDoctor(data) Doctor
-        +approvePayment(paymentId) boolean
-        +resolveComplaint(id, response) boolean
-        +postAnnouncement(announcement) boolean
-    }
+' =============================================
+' BASE CLASS — User
+' =============================================
+abstract class User {
+  - id: int
+  - name: String
+  - email: String
+  - password: String
+  - profileImage: String
+  - status: boolean
+  - role: Role
+  - mustChangePassword: boolean
+  - createdAt: DateTime
+  + login(identifier: String, password: String): AuthToken
+  + logout(): void
+  + changePassword(old: String, new: String): boolean
+  + updateProfile(data: Map): boolean
+  + getRole(): Role
+}
 
-    class SuperAdmin {
-        +assignRole(userId, role) boolean
-        +createRole(name, permissions) Role
-        +backupDatabase() BackupFile
-        +customizeApp(name, logo) boolean
-        +managePermissions() List~Permission~
-    }
+enum Role {
+  STUDENT
+  DOCTOR
+  ADMIN
+  SUPER_ADMIN
+}
 
-    class Course {
-        +String courseId
-        +String title
-        +String description
-        +int creditHours
-        +String department
-        +getMaterials() List~EducationalMaterial~
-        +getQuestions() List~Question~
-        +getResults() List~Result~
-    }
+' =============================================
+' SUBCLASSES
+' =============================================
+class Student {
+  - universityId: String
+  - major: String
+  - level: int
+  - gpa: double
+  + getResults(): List<Result>
+  + getPayments(): List<Payment>
+  + submitComplaint(subject: String, desc: String): Complaint
+  + uploadReceipt(file: File): Payment
+  + uploadResearchReport(title: String, file: File): ResearchReport
+  + startQuiz(courseId: String): Quiz
+  + syncData(): SyncResult
+}
 
-    class EducationalMaterial {
-        +String materialId
-        +String title
-        +MaterialType type
-        +String fileUrl
-        +String fileSize
-        +String academicYear
-        +String semester
-        +String narrator
-        +String duration
-        +DateTime uploadedAt
-        +getFileUrl() String
-        +getMetadata() Map
-    }
+class Doctor {
+  + getStudentList(): List<Student>
+  + enterGrade(studentId: int, courseId: String, grade: String): Result
+  + uploadMaterial(material: EducationalMaterial): boolean
+  + reviewReport(reportId: int, status: String, feedback: String): boolean
+  + startPrivateChat(studentId: int): ChatRoom
+}
 
-    class Question {
-        +String questionId
-        +String questionText
-        +List~String~ options
-        +String correctAnswer
-        +String difficultyLevel
-        +int unitNumber
-        +checkAnswer(answer) boolean
-    }
+class Admin {
+  + createStudent(data: Map): Student
+  + createDoctor(data: Map): Doctor
+  + approvePayment(paymentId: String): boolean
+  + resolveComplaint(complaintId: String, response: String): boolean
+  + postAnnouncement(announcement: Announcement): boolean
+  + uploadMaterial(material: EducationalMaterial): boolean
+}
 
-    class Quiz {
-        +List~Question~ questions
-        +Map studentAnswers
-        +double score
-        +DateTime startedAt
-        +submitAnswer(questionId, answer) void
-        +calculateScore() double
-        +generateReport() QuizReport
-        +finish() QuizReport
-    }
+class SuperAdmin {
+  + assignRole(userId: int, role: Role): boolean
+  + createRole(name: String, permissions: List): Role
+  + backupDatabase(): BackupFile
+  + customizeApp(name: String, logo: File): boolean
+  + managePermissions(): List<Permission>
+}
 
-    class QuizReport {
-        +double score
-        +double percentage
-        +int correctCount
-        +int wrongCount
-        +String level
-        +display() void
-    }
+' Generalization (Inheritance)
+User <|-- Student : extends
+User <|-- Doctor : extends
+User <|-- Admin : extends
+User <|-- SuperAdmin : extends
 
-    class Result {
-        +String resultId
-        +String courseTitle
-        +String grade
-        +String semester
-        +getGradePoint() double
-    }
+User --> Role : has
 
-    class Payment {
-        +String paymentId
-        +double amount
-        +PaymentStatus status
-        +DateTime paymentDate
-        +String receiptUrl
-        +boolean isSynced
-        +approve() void
-        +reject(reason) void
-        +uploadReceipt(file) String
-    }
+' =============================================
+' COURSE
+' =============================================
+class Course {
+  - courseId: String
+  - title: String
+  - description: String
+  - creditHours: int
+  - department: String
+  - doctor: Doctor
+  + getMaterials(): List<EducationalMaterial>
+  + getQuestions(): List<Question>
+  + getResults(): List<Result>
+}
 
-    class Complaint {
-        +String complaintId
-        +String subject
-        +String description
-        +ComplaintStatus status
-        +DateTime submittedAt
-        +boolean isSynced
-        +resolve(response) void
-        +markReviewed() void
-    }
+' =============================================
+' EDUCATIONAL MATERIAL
+' =============================================
+class EducationalMaterial {
+  - materialId: String
+  - title: String
+  - type: MaterialType
+  - fileUrl: String
+  - fileSize: String
+  - academicYear: String
+  - semester: String
+  - narrator: String
+  - duration: String
+  - uploadedAt: DateTime
+  + getFileUrl(): String
+  + getMetadata(): Map
+}
 
-    class Announcement {
-        +String announcementId
-        +String title
-        +String content
-        +DateTime datePosted
-        +String targetAudience
-        +String imageUrl
-        +publish() void
-        +delete() void
-    }
+enum MaterialType {
+  PDF
+  AUDIO
+  VIDEO
+  LINK
+}
 
-    class ChatRoom {
-        +String roomId
-        +String title
-        +ChatRoomType type
-        +sendMessage(message) void
-        +getMessages() List~ChatMessage~
-        +addParticipant(userId) void
-    }
+EducationalMaterial --> MaterialType : type
 
-    class ChatMessage {
-        +String messageId
-        +String senderName
-        +String messageText
-        +String mediaType
-        +String mediaPath
-        +DateTime timestamp
-        +boolean isSynced
-        +markAsSynced() void
-    }
+' =============================================
+' QUESTION & QUIZ
+' =============================================
+class Question {
+  - questionId: String
+  - questionText: String
+  - options: List<String>
+  - correctAnswer: String
+  - difficultyLevel: String
+  - unitNumber: int
+  + checkAnswer(answer: String): boolean
+}
 
-    class ResearchReport {
-        +String title
-        +String department
-        +String fileUrl
-        +String status
-        +String feedback
-        +submit() void
-        +review(status, feedback) void
-    }
+class Quiz {
+  - questions: List<Question>
+  - studentAnswers: Map<String, String>
+  - score: double
+  - startedAt: DateTime
+  + submitAnswer(questionId: String, answer: String): void
+  + calculateScore(): double
+  + generateReport(): QuizReport
+  + finish(): QuizReport
+}
 
-    class GraduationProject {
-        +String title
-        +String description
-        +List~String~ students
-        +String supervisor
-        +String status
-        +addTask(task) void
-        +getTasks() List~GraduationTask~
-    }
+class QuizReport {
+  - score: double
+  - percentage: double
+  - correctCount: int
+  - wrongCount: int
+  - level: String
+  + display(): void
+}
 
-    class GraduationTask {
-        +String taskTitle
-        +String studentName
-        +String status
-        +complete() void
-    }
+Quiz "1" --> "*" Question : contains
+Quiz "1" --> "1" QuizReport : generates
 
-    class SyncService {
-        +String apiBaseUrl
-        +String authToken
-        +login(identifier, password) AuthToken
-        +syncAll() SyncResult
-        +pushDrafts() void
-        +testConnection() boolean
-    }
+' =============================================
+' RESULT
+' =============================================
+class Result {
+  - resultId: String
+  - courseTitle: String
+  - grade: String
+  - semester: String
+  + getGradePoint(): double
+}
 
-    class DatabaseHelper {
-        +insert(table, data) int
-        +update(table, data, where) int
-        +query(table, where) List~Map~
-        +syncSnapshot(data) void
-        +getUnsynced(table) List~Map~
-    }
+' =============================================
+' PAYMENT
+' =============================================
+class Payment {
+  - paymentId: String
+  - amount: double
+  - status: PaymentStatus
+  - paymentDate: DateTime
+  - receiptUrl: String
+  - isSynced: boolean
+  + approve(): void
+  + reject(reason: String): void
+  + uploadReceipt(file: File): String
+}
 
-    %% Inheritance (Generalization)
-    User <|-- Student : extends
-    User <|-- Doctor : extends
-    User <|-- Admin : extends
-    User <|-- SuperAdmin : extends
+enum PaymentStatus {
+  PAID
+  PENDING
+  OVERDUE
+}
 
-    %% Associations
-    Doctor "1" --> "*" Course : teaches
-    Course "1" *-- "*" EducationalMaterial : contains
-    Course "1" *-- "*" Question : has
+Payment --> PaymentStatus : status
 
-    Student "1" --> "*" Result : obtains
-    Student "1" --> "*" Payment : makes
-    Student "1" --> "*" Complaint : files
-    Student "1" --> "*" ResearchReport : submits
-    Student "1" --> "1" Quiz : takes
+' =============================================
+' COMPLAINT
+' =============================================
+class Complaint {
+  - complaintId: String
+  - subject: String
+  - description: String
+  - status: ComplaintStatus
+  - submittedAt: DateTime
+  - isSynced: boolean
+  + resolve(response: String): void
+  + markReviewed(): void
+}
 
-    Quiz "1" --> "*" Question : contains
-    Quiz "1" --> "1" QuizReport : generates
+enum ComplaintStatus {
+  PENDING
+  REVIEWED
+  RESOLVED
+}
 
-    Admin "1" --> "*" Announcement : posts
+Complaint --> ComplaintStatus : status
 
-    User "1" --> "*" ChatRoom : participates
-    ChatRoom "1" *-- "*" ChatMessage : contains
+' =============================================
+' ANNOUNCEMENT
+' =============================================
+class Announcement {
+  - announcementId: String
+  - title: String
+  - content: String
+  - datePosted: DateTime
+  - targetAudience: String
+  - imageUrl: String
+  + publish(): void
+  + delete(): void
+}
 
-    GraduationProject "1" *-- "*" GraduationTask : has
+' =============================================
+' CHAT
+' =============================================
+class ChatRoom {
+  - roomId: String
+  - title: String
+  - type: ChatRoomType
+  + sendMessage(message: ChatMessage): void
+  + getMessages(): List<ChatMessage>
+  + addParticipant(userId: int): void
+}
 
-    SyncService --> DatabaseHelper : uses
+enum ChatRoomType {
+  PRIVATE
+  GROUP
+  FORUM
+}
+
+class ChatMessage {
+  - messageId: String
+  - senderName: String
+  - messageText: String
+  - mediaType: String
+  - mediaPath: String
+  - timestamp: DateTime
+  - isSynced: boolean
+  + markAsSynced(): void
+}
+
+ChatRoom --> ChatRoomType : type
+ChatRoom "1" *-- "*" ChatMessage : contains
+
+' =============================================
+' RESEARCH REPORT
+' =============================================
+class ResearchReport {
+  - title: String
+  - department: String
+  - fileUrl: String
+  - status: String
+  - feedback: String
+  + submit(): void
+  + review(status: String, feedback: String): void
+}
+
+' =============================================
+' GRADUATION
+' =============================================
+class GraduationProject {
+  - title: String
+  - description: String
+  - students: List<String>
+  - supervisor: String
+  - department: String
+  - year: String
+  - status: String
+  + addTask(task: GraduationTask): void
+  + getTasks(): List<GraduationTask>
+}
+
+class GraduationTask {
+  - taskTitle: String
+  - studentName: String
+  - status: String
+  + complete(): void
+}
+
+GraduationProject "1" *-- "*" GraduationTask : has
+
+' =============================================
+' SETTINGS
+' =============================================
+class Setting {
+  - key: String
+  - value: String
+  + get(key: String): String
+  + set(key: String, value: String): void
+}
+
+' =============================================
+' SYNC SERVICE
+' =============================================
+class SyncService {
+  - apiBaseUrl: String
+  - authToken: String
+  + login(identifier: String, password: String): AuthToken
+  + syncAll(): SyncResult
+  + pushDrafts(): void
+  + testConnection(): boolean
+}
+
+class DatabaseHelper {
+  + insert(table: String, data: Map): int
+  + update(table: String, data: Map, where: Map): int
+  + query(table: String, where: Map): List<Map>
+  + syncSnapshot(data: Map): void
+  + getUnsynced(table: String): List<Map>
+}
+
+' =============================================
+' ASSOCIATIONS
+' =============================================
+Doctor "1" --> "*" Course : teaches
+Course "1" *-- "*" EducationalMaterial : contains
+Course "1" *-- "*" Question : has
+
+Student "1" --> "*" Result : obtains
+Student "1" --> "*" Payment : makes
+Student "1" --> "*" Complaint : files
+Student "1" --> "*" ResearchReport : submits
+Student "1" --> "1" Quiz : takes
+
+Admin "1" --> "*" Announcement : posts
+User "1" --> "*" ChatRoom : participates
+User "1" --> "*" ChatMessage : sends
+
+SyncService --> DatabaseHelper : uses
+SyncService ..> User : authenticates
+
+note top of SyncService
+  يعمل بمكتبة Dio في Flutter
+  للتواصل مع Laravel API
+  ويدير المزامنة الثنائية
+end note
+
+note bottom of DatabaseHelper
+  يُدير SQLite المحلي في الجوال
+  ويدعم 18 جدولاً مترابطة
+  للعمل بدون إنترنت
+end note
+
+@enduml
 ```
 
 ---
 
-# 4️⃣ مخطط التسلسل — الاختبار التفاعلي (Sequence Diagram)
+# 📌 القسم الثالث: النمذجة السلوكية (Behavioral Modeling)
 
-> التفاعل الديناميكي بين الطالب وواجهة Flutter وSQLite ومنطق الأعمال
+---
 
-```mermaid
-sequenceDiagram
-    actor Student as 🎓 الطالب
-    participant UI as 📱 QuestionsScreen
-    participant DB as 🗄️ DatabaseHelper
-    participant Quiz as 📊 Quiz Logic
-    participant Report as 📋 QuizReport
+## 4️⃣ مخطط التسلسل (Sequence Diagram) — عملية الاختبار التفاعلي
 
-    rect rgb(15, 52, 96)
-        Note over Student,Report: ═══ تهيئة الاختبار ═══
-    end
+### 📋 الشرح:
+يوضح التفاعل الديناميكي بين الكائنات خلال تنفيذ عملية **بدء اختبار تفاعلي وعرض نتيجته**. يتضح فيه تمرير الرسائل عبر الزمن بين الطالب وتطبيق Flutter وقاعدة البيانات المحلية.
 
-    Student->>UI: فتح صفحة بنك الأسئلة
-    activate UI
+```plantuml
+@startuml SASP_SequenceDiagram
+!theme blueprint
+title مخطط التسلسل — عملية الاختبار التفاعلي
 
-    UI->>DB: query('courses', {student_level})
-    activate DB
-    DB-->>UI: List~Course~
-    deactivate DB
+skinparam backgroundColor #1a1a2e
+skinparam sequence {
+  ParticipantBackgroundColor #16213e
+  ParticipantBorderColor #0f3460
+  ParticipantFontColor #e0e0e0
+  ArrowColor #e94560
+  LifeLineBorderColor #0f3460
+  ActorBackgroundColor #0f3460
+  ActorBorderColor #e94560
+  ActorFontColor #e0e0e0
+  BoxBackgroundColor #1a1a2e
+  BoxBorderColor #0f3460
+  NoteBackgroundColor #0f3460
+  NoteBorderColor #e94560
+  NoteFontColor white
+}
 
-    UI-->>Student: عرض قائمة المواد الدراسية
+actor "🎓 الطالب" as Student
+participant "📱 QuestionsScreen\n(Flutter UI)" as UI
+participant "🗄️ DatabaseHelper\n(SQLite)" as DB
+participant "📊 Quiz\n(Business Logic)" as Quiz
+participant "📋 QuizReport\n(Report Generator)" as Report
 
-    Student->>UI: اختيار مادة + صعوبة + وحدات
-    UI->>DB: query('questions', {course_id, difficulty, units})
-    activate DB
-    DB-->>UI: List~Question~
-    deactivate DB
+== تهيئة الاختبار ==
 
-    UI->>Quiz: create(questions)
-    activate Quiz
-    Quiz-->>UI: quizInstance جاهز
+Student -> UI : فتح صفحة بنك الأسئلة
+activate UI
 
-    UI-->>Student: عرض السؤال الأول
+UI -> DB : query('courses', {student_level})
+activate DB
+DB --> UI : List<Course>
+deactivate DB
 
-    rect rgb(22, 33, 62)
-        Note over Student,Report: ═══ دورة الاختبار ═══
-    end
+UI --> Student : عرض قائمة المواد الدراسية
 
-    loop لكل سؤال في الاختبار
-        Student->>UI: اختيار إجابة (A/B/C/D)
-        UI->>Quiz: submitAnswer(questionId, selectedAnswer)
-        Quiz-->>UI: تحديث حالة السؤال
+Student -> UI : اختيار مادة + مستوى صعوبة + وحدات
+UI -> DB : query('questions', {course_id, difficulty, units})
+activate DB
+DB --> UI : List<Question>
+deactivate DB
 
-        alt سؤال أخير
-            UI-->>Student: زر إنهاء الاختبار
-        else سؤال وسط
-            UI-->>Student: السؤال التالي
-        end
-    end
+UI -> Quiz : create(questions: List<Question>)
+activate Quiz
+Quiz --> UI : quizInstance (جاهز للبدء)
 
-    rect rgb(26, 26, 46)
-        Note over Student,Report: ═══ حساب النتيجة ═══
-    end
+UI --> Student : عرض شاشة الاختبار\n(السؤال الأول)
 
-    Student->>UI: ضغط إنهاء الاختبار
-    UI->>Quiz: finish()
-    activate Quiz
-    Quiz->>Quiz: calculateScore()
-    Note right of Quiz: (صح / المجموع) × 100
+== دورة الاختبار ==
 
-    Quiz->>Report: create(score, correct, wrong)
-    activate Report
-    Report->>Report: determineLevel()
-    Note right of Report: ≥90% ممتاز\n≥70% جيد جداً\n≥60% جيد\n≥50% مقبول\n < 50% ضعيف
-    Report-->>Quiz: reportInstance
-    deactivate Report
-    Quiz-->>UI: QuizReport
-    deactivate Quiz
+loop لكل سؤال في الاختبار
 
-    UI->>DB: insert('quiz_history', {course, score, date})
-    activate DB
-    DB-->>UI: saved ✓
-    deactivate DB
+  Student -> UI : اختيار إجابة (A/B/C/D)
+  UI -> Quiz : submitAnswer(questionId, selectedAnswer)
+  Quiz --> UI : تحديث حالة السؤال
 
-    UI-->>Student: عرض تقرير الأداء الذكي\n(النسبة، المستوى، التوصيات)
-    deactivate UI
+  alt سؤال أخير؟
+    UI --> Student : عرض زر "إنهاء الاختبار"
+  else
+    UI --> Student : عرض السؤال التالي
+  end
+
+end
+
+== إنهاء الاختبار وحساب النتيجة ==
+
+Student -> UI : ضغط "إنهاء الاختبار"
+UI -> Quiz : finish()
+activate Quiz #darkgreen
+Quiz -> Quiz : calculateScore()
+note right: الحساب:\n(صح / المجموع) × 100
+Quiz -> Report : create(score, correct, wrong)
+activate Report
+Report -> Report : determineLevel()
+note right: ≥90% → ممتاز\n≥70% → جيد\n≥50% → مقبول\n<50% → ضعيف
+Report --> Quiz : reportInstance
+deactivate Report
+Quiz --> UI : QuizReport
+deactivate Quiz
+
+UI -> DB : insert('quiz_history', {course, score, date})
+activate DB
+DB --> UI : saved
+deactivate DB
+
+UI --> Student : عرض تقرير الأداء الذكي\n(النسبة، المستوى، التوصيات)
+
+== عرض السجل السابق ==
+
+Student -> UI : طلب عرض الاختبارات السابقة
+UI -> DB : query('quiz_history', {student_id})
+activate DB
+DB --> UI : List<QuizHistory>
+deactivate DB
+UI --> Student : عرض سجل الاختبارات السابقة
+
+deactivate UI
+@enduml
 ```
 
 ---
 
-# 5️⃣ مخطط التسلسل — رفع المسودات عند عودة الاتصال
+## 5️⃣ مخطط التسلسل — دفع البيانات المحلية (Offline Sync Push)
 
-```mermaid
-sequenceDiagram
-    actor Student as 🎓 الطالب
-    participant Home as 📱 HomeScreen
-    participant Sync as ⚡ SyncService
-    participant DB as 🗄️ SQLite
-    participant API as 🌐 Laravel API
+### 📋 الشرح:
+يوضح عملية دفع البيانات المُنشأة أثناء وضع الأوفلاين (شكوى، رسالة، إيصال دفع) إلى السيرفر عند عودة الاتصال.
 
-    Student->>Home: سحب للأسفل (Pull to Refresh)
-    activate Home
-    Home->>Sync: syncAll()
-    activate Sync
+```plantuml
+@startuml SASP_SequenceDiagram_Sync
+!theme blueprint
+title مخطط التسلسل — رفع المسودات عند عودة الاتصال
 
-    Sync->>DB: getSettings('api_base_url')
-    DB-->>Sync: "http://192.168.x.x:8000/api"
+skinparam backgroundColor #1a1a2e
+skinparam sequence {
+  ParticipantBackgroundColor #16213e
+  ParticipantBorderColor #0f3460
+  ParticipantFontColor #e0e0e0
+  ArrowColor #e94560
+  LifeLineBorderColor #0f3460
+}
 
-    Sync->>API: GET /api/sync (Bearer Token)
-    activate API
+actor "🎓 الطالب" as Student
+participant "📱 HomeScreen" as Home
+participant "⚡ SyncService" as Sync
+participant "🗄️ DatabaseHelper" as DB
+participant "🌐 Laravel API\n/api/sync/*" as API
 
-    alt ✅ الاتصال ناجح
-        API-->>Sync: 200 OK {settings, courses, materials, results, payments}
-        Sync->>DB: syncSnapshot(responseData)
-        DB-->>Sync: done ✓
+== عند انتقال التطبيق للمقدمة ==
 
-        Note over Sync,API: ══ دفع المسودات المحلية ══
+Student -> Home : سحب الشاشة للأسفل\n(Pull to Refresh)
+activate Home
+Home -> Sync : syncAll()
+activate Sync
 
-        Sync->>DB: getUnsynced('complaints')
-        DB-->>Sync: List~Complaint~ is_synced=0
+Sync -> DB : getSettings('api_base_url')
+activate DB
+DB --> Sync : "http://192.168.x.x:8000/api"
+deactivate DB
 
-        alt توجد شكاوى
-            Sync->>API: POST /api/sync/complaints
-            API-->>Sync: 200 OK {saved: true}
-            Sync->>DB: UPDATE complaints SET is_synced=1
-        end
+Sync -> API : GET /api/sync\nAuthorization: Bearer {token}
+activate API
 
-        Sync->>DB: getUnsynced('chat_messages')
-        DB-->>Sync: List~ChatMessage~
+alt الاتصال ناجح
+  API --> Sync : 200 OK\n{settings, courses, materials,\nannouncements, results, payments}
+  Sync -> DB : syncSnapshot(responseData)
+  activate DB
+  DB --> Sync : done
+  deactivate DB
 
-        alt توجد رسائل
-            Sync->>API: POST /api/sync/messages
-            API-->>Sync: 200 OK
-            Sync->>DB: UPDATE messages SET is_synced=1
-        end
+  == دفع المسودات المحلية ==
 
-        Sync->>DB: getUnsynced('payments')
-        DB-->>Sync: List~Payment~
+  Sync -> DB : getUnsynced('complaints')
+  activate DB
+  DB --> Sync : List<Complaint> (is_synced=0)
+  deactivate DB
 
-        alt توجد مدفوعات
-            Sync->>API: POST /api/sync/payments
-            API-->>Sync: 200 OK
-            Sync->>DB: UPDATE payments SET is_synced=1
-        end
+  alt توجد شكاوى غير مزامنة
+    Sync -> API : POST /api/sync/complaints\n{complaints: [...]}
+    API --> Sync : 200 OK {saved: true}
+    Sync -> DB : update complaints\nset is_synced=1
+  end
 
-        Sync-->>Home: SyncResult(success: true)
-        Home-->>Student: ✅ تمت المزامنة بنجاح
+  Sync -> DB : getUnsynced('chat_messages')
+  activate DB
+  DB --> Sync : List<ChatMessage>
+  deactivate DB
 
-    else ❌ الاتصال فاشل
-        API-->>Sync: Network Error / Timeout
-        Sync-->>Home: SyncResult(success: false)
-        Home-->>Student: ⚠️ تعذّر الاتصال — وضع أوفلاين
-    end
+  alt توجد رسائل غير مزامنة
+    Sync -> API : POST /api/sync/messages\n{messages: [...]}
+    API --> Sync : 200 OK
+    Sync -> DB : update messages\nset is_synced=1
+  end
 
-    deactivate API
-    deactivate Sync
-    deactivate Home
+  Sync -> DB : getUnsynced('payments')
+  activate DB
+  DB --> Sync : List<Payment>
+  deactivate DB
+
+  alt توجد مدفوعات غير مزامنة
+    Sync -> API : POST /api/sync/payments\n{payments: [...]}
+    API --> Sync : 200 OK
+    Sync -> DB : update payments\nset is_synced=1
+  end
+
+  Sync --> Home : SyncResult(success: true)
+  Home --> Student : ✅ "تمت المزامنة بنجاح"\n(تحديث الواجهة)
+
+else الاتصال فاشل
+  API --> Sync : Network Error / Timeout
+  Sync --> Home : SyncResult(success: false)
+  Home --> Student : ⚠️ "تعذّر الاتصال\nتعمل في وضع أوفلاين"
+end
+
+deactivate API
+deactivate Sync
+deactivate Home
+
+@enduml
 ```
 
 ---
 
-# 6️⃣ مخطط آلة الحالة — دورة حياة الشكوى (State Machine)
+## 6️⃣ مخطط آلة الحالة (State Machine Diagram) — كائن "الشكوى"
 
-> الحالات والانتقالات لكائن Complaint من الإنشاء حتى الحل
+### 📋 الشرح:
+يوضح الحالات المختلفة التي يمر بها كائن `Complaint` منذ إنشائه من قِبل الطالب وحتى حله من قِبل الإدارة، مع توضيح جميع الانتقالات (Transitions) والأحداث المُطلِقة لها.
 
-```mermaid
-stateDiagram-v2
-    direction LR
+```plantuml
+@startuml SASP_StateMachineDiagram_Complaint
+!theme blueprint
+title مخطط آلة الحالة — دورة حياة الشكوى (Complaint Lifecycle)
 
-    [*] --> Draft : الطالب يبدأ كتابة الشكوى
+skinparam backgroundColor #1a1a2e
+skinparam state {
+  BackgroundColor #16213e
+  BorderColor #0f3460
+  FontColor #e0e0e0
+  ArrowColor #e94560
+  StartColor #e94560
+  EndColor #e94560
+}
 
-    state Draft {
-        [*] --> Filling
-        Filling --> Ready : ملء الموضوع والوصف
-    }
+[*] --> Draft : الطالب يبدأ كتابة الشكوى
 
-    state LocalPending {
-        [*] --> SavedLocally
-        SavedLocally --> WaitingSync : is_synced = 0
-    }
+state Draft {
+  : الطالب يملأ الموضوع والوصف
+}
 
-    state Pending {
-        [*] --> ServerReceived
-        ServerReceived --> AwaitingReview : is_synced = 1
-    }
+state LocalPending {
+  : محفوظة محلياً في SQLite\n is_synced = 0
+}
 
-    state Reviewed {
-        [*] --> UnderReview
-        UnderReview --> PendingDecision : الإداري يقرأ الشكوى
-    }
+state Pending {
+  : مستلمة في قاعدة بيانات السيرفر\n is_synced = 1
+  : تنتظر مراجعة الإدارة
+}
 
-    state Resolved {
-        [*] --> Closed
-        Closed --> Archived : رد الإدارة موثق
-    }
+state Reviewed {
+  : تحت المراجعة من قبل الإدارة
+  : معروضة في لوحة التحكم
+}
 
-    state Rejected {
-        [*] --> Dismissed
-        Dismissed --> NotifyStudent : سبب الرفض مُضاف
-    }
+state Resolved {
+  : تم حل الشكوى
+  : أُضيف رد ونتيجة
+}
 
-    Draft --> LocalPending : تأكيد الإرسال\n[لا يوجد إنترنت]
-    Draft --> Pending : تأكيد الإرسال\n[يوجد إنترنت]\nPOST /api/sync/complaints
+state Rejected {
+  : تم رفض الشكوى
+  : مع سبب الرفض
+}
 
-    LocalPending --> Pending : عودة الاتصال\nSyncService.pushDrafts()\nتحديث is_synced = 1
+Draft --> LocalPending : تأكيد الإرسال\n[لا يوجد إنترنت]
 
-    Pending --> Reviewed : الإداري يفتح الشكوى\nتغيير الحالة → Reviewed
+Draft --> Pending : تأكيد الإرسال\n[يوجد إنترنت]\n/ POST /api/sync/complaints
 
-    Reviewed --> Resolved : ضغط حل الشكوى\n+ إضافة الرد\nPOST /dashboard/complaints/{id}/resolve
+LocalPending --> Pending : عودة الإنترنت\n/ SyncService.pushDrafts()\n/ تحديث is_synced=1
 
-    Reviewed --> Rejected : رفض الشكوى\n+ سبب الرفض
+Pending --> Reviewed : الإداري يفتح الشكوى\n/ تغيير الحالة إلى Reviewed
 
-    Resolved --> [*] : انتهاء دورة الحياة ✅
+Reviewed --> Resolved : الإداري يضغط "حل الشكوى"\n[مع إضافة الرد]\n/ POST /dashboard/complaints/{id}/resolve
 
-    Rejected --> Draft : الطالب يُعدّل ويُعيد الإرسال
+Reviewed --> Rejected : الإداري يرفض الشكوى\n[مع سبب الرفض]
 
-    note right of LocalPending
-        التطبيق يحتفظ بالشكوى
-        حتى عودة الإنترنت
-        ثم يرفعها تلقائياً
-    end note
+Resolved --> [*] : انتهاء دورة الحياة
 
-    note right of Resolved
-        يرى الطالب الحالة
-        في complaints_portal_screen
-    end note
+Rejected --> Draft : الطالب يُعدّل ويُعيد الإرسال
+
+note right of LocalPending
+  يحتفظ التطبيق بالشكوى
+  حتى عودة الإنترنت
+  ثم يرفعها تلقائياً
+end note
+
+note right of Resolved
+  يستطيع الطالب رؤية
+  حالة شكواه في أي وقت
+  عبر complaints_portal_screen
+end note
+
+@enduml
 ```
 
 ---
 
-# 7️⃣ مخطط آلة الحالة — دورة حياة الدفعة (Payment Lifecycle)
+## 7️⃣ مخطط آلة الحالة — كائن "المدفوعات" (Payment Lifecycle)
 
-```mermaid
-stateDiagram-v2
-    direction LR
+### 📋 الشرح:
+يوضح دورة حياة كائن `Payment` من لحظة إنشائه بواسطة الطالب حتى تأكيده أو تأخره.
 
-    [*] --> Pending : الإدارة تنشئ دفعة جديدة\nPOST /dashboard/payments
+```plantuml
+@startuml SASP_StateMachineDiagram_Payment
+!theme blueprint
+title مخطط آلة الحالة — دورة حياة الدفعة (Payment Lifecycle)
 
-    state Pending {
-        [*] --> AwaitingPayment
-        AwaitingPayment --> Notified : الطالب مُبلَّغ بالمبلغ
-    }
+skinparam backgroundColor #1a1a2e
+skinparam state {
+  BackgroundColor #16213e
+  BorderColor #0f3460
+  FontColor #e0e0e0
+  ArrowColor #e94560
+}
 
-    state ReceiptUploaded {
-        [*] --> Uploaded
-        Uploaded --> PendingApproval : ينتظر مراجعة الإدارة
-    }
+[*] --> Overdue : انتهاء موعد السداد\nbefore الدفع
 
-    state Overdue {
-        [*] --> LateStatus
-        LateStatus --> RedFlag : تجاوز تاريخ الاستحقاق
-    }
+[*] --> Pending : الإدارة تنشئ دفعة جديدة\n/ POST /dashboard/payments
 
-    state Paid {
-        [*] --> Confirmed
-        Confirmed --> Archived : سجل دائم في النظام ✅
-    }
+state Pending {
+  : مبلغ مستحق وينتظر الدفع
+  : الطالب يرى الحالة "معلق"
+}
 
-    state Rejected {
-        [*] --> Declined
-        Declined --> ReasonAdded : سبب الرفض مُضاف
-    }
+state ReceiptUploaded {
+  : الطالب رفع الإيصال
+  : is_synced = 0 (أوفلاين)\nأو = 1 (أونلاين)
+  : تنتظر مراجعة الإدارة
+}
 
-    Pending --> ReceiptUploaded : الطالب يرفع الإيصال\nPOST /api/sync/payments\n{receipt_url}
+state Paid {
+  : تأكيد الدفع بواسطة الإدارة
+  : سجل دائم في النظام
+}
 
-    Pending --> Overdue : تجاوز تاريخ الاستحقاق\nScheduled Job يُغيّر الحالة
+state Overdue {
+  : تجاوز موعد السداد
+  : يظهر للطالب بالأحمر
+  : إشعار تأخر السداد
+}
 
-    Overdue --> ReceiptUploaded : الطالب يرفع الإيصال\n(رغم التأخر)
+state Rejected {
+  : الإيصال غير صحيح
+  : مع سبب الرفض
+}
 
-    ReceiptUploaded --> Paid : الإدارة توافق\nPOST /dashboard/payments/{id}/approve
+Pending --> ReceiptUploaded : الطالب يرفع الإيصال\n/ PUT /api/sync/payments\n{receipt_url, is_synced}
 
-    ReceiptUploaded --> Rejected : الإدارة ترفض\n[الإيصال غير صحيح]\n+ سبب الرفض
+Pending --> Overdue : تجاوز تاريخ الاستحقاق\n/ Scheduled Job يُغيّر الحالة
 
-    Rejected --> ReceiptUploaded : الطالب يُعيد\nرفع إيصال صحيح
+Overdue --> ReceiptUploaded : الطالب يرفع الإيصال\n(رغم التأخر)
 
-    Paid --> [*] : اكتمل ✅
+ReceiptUploaded --> Paid : الإدارة توافق\n/ POST /dashboard/payments/{id}/approve
+
+ReceiptUploaded --> Rejected : الإدارة ترفض\n[الإيصال غير واضح أو غير صحيح]\n/ مع إضافة سبب الرفض
+
+Rejected --> ReceiptUploaded : الطالب يُعيد رفع إيصال صحيح
+
+Paid --> [*] : انتهاء دورة الحياة (مكتمل)
+
+@enduml
 ```
 
 ---
 
-# 8️⃣ مخطط الكيانات والعلاقات (ERD)
+# 📌 القسم الرابع: إدارة البيانات (Data Management Layer)
 
-> تصميم قاعدة بيانات Laravel الكامل — 23 جدولاً
+---
+
+## 8️⃣ مخطط الكيانات والعلاقات — ERD
+
+### 📋 الشرح:
+يوضح التصميم الكامل لقاعدة البيانات العلائقية لخادم Laravel، مع المفاتيح الأساسية والأجنبية وأنواع العلاقات بين الجداول الـ 23.
 
 ```mermaid
 erDiagram
 
+    %% =================== USERS ===================
     users {
-        bigint id PK
-        varchar name
-        varchar email "UNIQUE"
-        varchar password
-        varchar profile_image
-        tinyint status "1=active 0=disabled"
-        varchar role "Student|Doctor|Admin|SuperAdmin"
-        varchar phone_number
-        tinyint must_change_password
-        timestamp deleted_at
-        timestamp created_at
-        timestamp updated_at
+        BIGINT id PK
+        VARCHAR name
+        VARCHAR email UK
+        VARCHAR password
+        VARCHAR profile_image
+        VARCHAR thumbnail
+        TINYINT status
+        ENUM role
+        VARCHAR phone_number
+        TINYINT must_change_password
+        TIMESTAMP deleted_at
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
+    %% =================== STUDENT DETAILS ===================
     student_details {
-        bigint user_id PK
-        varchar university_id "UNIQUE"
-        varchar major
-        int level
-        float gpa
+        BIGINT user_id PK_FK
+        VARCHAR university_id UK
+        VARCHAR major
+        INT level
+        DOUBLE gpa
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
+    %% =================== COURSES ===================
     courses {
-        varchar course_id PK
-        varchar title
-        text description
-        bigint doctor_id FK
-        int credit_hours
-        varchar department
-        timestamp created_at
-        timestamp updated_at
+        VARCHAR course_id PK
+        VARCHAR title
+        TEXT description
+        BIGINT doctor_id FK
+        INT credit_hours
+        VARCHAR department
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
+    %% =================== EDUCATIONAL MATERIALS ===================
     educational_materials {
-        varchar material_id PK
-        varchar course_id FK
-        varchar title
-        varchar type "pdf|audio|video|link"
-        text file_url
-        varchar file_path
-        varchar file_size
-        varchar academic_year
-        varchar semester
-        varchar department
-        text description
-        varchar narrator
-        varchar duration
-        varchar image_path
-        timestamp uploaded_at
-        timestamp created_at
-        timestamp updated_at
+        VARCHAR material_id PK
+        VARCHAR course_id FK
+        VARCHAR title
+        ENUM type
+        TEXT file_url
+        VARCHAR file_path
+        VARCHAR file_size
+        VARCHAR academic_year
+        VARCHAR semester
+        VARCHAR department
+        TEXT description
+        VARCHAR narrator
+        VARCHAR duration
+        VARCHAR image_path
+        TIMESTAMP uploaded_at
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
+    %% =================== QUESTIONS ===================
     questions {
-        varchar question_id PK
-        varchar course_id FK
-        text question_text
-        text options
-        varchar correct_answer
-        varchar difficulty_level "easy|medium|hard"
-        int unit_number
-        timestamp created_at
-        timestamp updated_at
+        VARCHAR question_id PK
+        VARCHAR course_id FK
+        TEXT question_text
+        TEXT options
+        VARCHAR correct_answer
+        ENUM difficulty_level
+        INT unit_number
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
+    %% =================== ANNOUNCEMENTS ===================
     sasp_announcements {
-        varchar announcement_id PK
-        varchar title
-        text content
-        bigint author_id FK
-        timestamp date_posted
-        varchar target_audience "All|Student|Doctor|Admin"
-        varchar image_url
-        varchar image_extension
-        timestamp created_at
-        timestamp updated_at
+        VARCHAR announcement_id PK
+        VARCHAR title
+        TEXT content
+        BIGINT author_id FK
+        TIMESTAMP date_posted
+        ENUM target_audience
+        VARCHAR image_url
+        VARCHAR image_extension
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
+    %% =================== CHAT ROOMS ===================
     sasp_chat_rooms {
-        varchar room_id PK
-        varchar title
-        varchar type "Private|Group|Forum"
-        bigint created_by FK
-        timestamp created_at
-        timestamp updated_at
+        VARCHAR room_id PK
+        VARCHAR title
+        ENUM type
+        BIGINT created_by FK
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
+    %% =================== CHAT MESSAGES ===================
     sasp_chat_messages {
-        varchar message_id PK
-        varchar room_id FK
-        bigint sender_id FK
-        varchar sender_name
-        text message_text
-        varchar media_type
-        varchar media_path
-        timestamp msg_timestamp
-        int is_synced
-        timestamp created_at
-        timestamp updated_at
+        VARCHAR message_id PK
+        VARCHAR room_id FK
+        BIGINT sender_id FK
+        VARCHAR sender_name
+        TEXT message_text
+        VARCHAR media_type
+        VARCHAR media_path
+        TIMESTAMP timestamp
+        INT is_synced
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
+    %% =================== RESULTS ===================
     results {
-        varchar result_id PK
-        bigint student_id FK
-        varchar course_id FK
-        varchar course_title
-        varchar grade
-        varchar semester
-        timestamp created_at
-        timestamp updated_at
+        VARCHAR result_id PK
+        BIGINT student_id FK
+        VARCHAR course_id FK
+        VARCHAR course_title
+        VARCHAR grade
+        VARCHAR semester
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
+    %% =================== PAYMENTS ===================
     payments {
-        varchar payment_id PK
-        bigint student_id FK
-        float amount
-        varchar payment_status "Paid|Pending|Overdue"
-        timestamp payment_date
-        text receipt_url
-        int is_synced
-        timestamp created_at
-        timestamp updated_at
+        VARCHAR payment_id PK
+        BIGINT student_id FK
+        DOUBLE amount
+        ENUM payment_status
+        TIMESTAMP payment_date
+        TEXT receipt_url
+        INT is_synced
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
+    %% =================== COMPLAINTS ===================
     complaints {
         VARCHAR complaint_id PK
         BIGINT user_id FK
@@ -2012,8 +2327,11 @@ erDiagram
         ENUM status
         TIMESTAMP submitted_at
         INT is_synced
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
+    %% =================== RESEARCH REPORTS ===================
     research_reports {
         BIGINT id PK
         BIGINT student_id FK
@@ -2022,8 +2340,11 @@ erDiagram
         VARCHAR file_url
         VARCHAR status
         TEXT feedback
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
+    %% =================== GRADUATION PROJECTS ===================
     graduation_projects {
         BIGINT id PK
         VARCHAR title
@@ -2033,16 +2354,22 @@ erDiagram
         VARCHAR department
         VARCHAR year
         ENUM status
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
+    %% =================== GRADUATION TASKS ===================
     graduation_tasks {
         BIGINT id PK
         BIGINT project_id FK
         VARCHAR student_name
         VARCHAR task_title
         ENUM status
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
+    %% =================== ACADEMIC TOOLS ===================
     academic_tools {
         BIGINT id PK
         VARCHAR name
@@ -2053,19 +2380,31 @@ erDiagram
         VARCHAR developer
         VARCHAR category
         JSON academic_uses
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
+    %% =================== AI TOOLS ===================
     ai_tools {
         BIGINT id PK
         VARCHAR name
-        TEXT description
+        VARCHAR description
         TEXT long_description
+        VARCHAR icon_name
         VARCHAR theme_color
+        VARCHAR category
+        VARCHAR highlight1_title
+        TEXT highlight1_desc
+        VARCHAR highlight2_title
+        TEXT highlight2_desc
         JSON key_features
         VARCHAR website_url
         VARCHAR play_store_url
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
+    %% =================== HOME ITEMS ===================
     home_items {
         BIGINT id PK
         VARCHAR title
@@ -2075,30 +2414,56 @@ erDiagram
         VARCHAR color
         BOOLEAN is_featured
         INT sort_order
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
+    %% =================== CURRICULUM OPTIONS ===================
+    curriculum_options {
+        BIGINT id PK
+        VARCHAR title
+        TEXT description
+        VARCHAR icon
+        VARCHAR color
+        VARCHAR route
+        VARCHAR button_text
+        VARCHAR button_icon
+        VARCHAR button_color
+        INT sort_order
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    %% =================== SETTINGS ===================
     settings {
         BIGINT id PK
         VARCHAR key UK
         TEXT value
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
+    %% =================== SPATIE PERMISSION TABLES ===================
     roles {
         BIGINT id PK
         VARCHAR name UK
         VARCHAR guard_name
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
     permissions {
         BIGINT id PK
         VARCHAR name UK
         VARCHAR guard_name
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 
     model_has_roles {
         BIGINT role_id FK
-        BIGINT model_id FK
         VARCHAR model_type
+        BIGINT model_id
     }
 
     role_has_permissions {
@@ -2106,8 +2471,9 @@ erDiagram
         BIGINT role_id FK
     }
 
-    %% ===== RELATIONSHIPS =====
-    users ||--o| student_details : "has profile (1:1)"
+    %% =================== RELATIONSHIPS ===================
+
+    users ||--o{ student_details : "has profile (1:1)"
     users ||--o{ courses : "teaches (1:N)"
     users ||--o{ results : "obtains (1:N)"
     users ||--o{ payments : "makes (1:N)"
@@ -2118,235 +2484,425 @@ erDiagram
     users ||--o{ research_reports : "submits (1:N)"
 
     courses ||--o{ educational_materials : "contains (1:N)"
-    courses ||--o{ questions : "has (1:N)"
-    courses ||--o{ results : "linked (1:N)"
+    courses ||--o{ questions : "has questions (1:N)"
+    courses ||--o{ results : "linked to (1:N)"
 
     sasp_chat_rooms ||--o{ sasp_chat_messages : "contains (1:N)"
+
     graduation_projects ||--o{ graduation_tasks : "has tasks (1:N)"
 
-    roles ||--o{ model_has_roles : ""
-    users ||--o{ model_has_roles : ""
-    permissions ||--o{ role_has_permissions : ""
-    roles ||--o{ role_has_permissions : ""
+    roles ||--o{ model_has_roles : "assigned via"
+    permissions ||--o{ role_has_permissions : "linked via"
+    roles ||--o{ role_has_permissions : "has"
+    users ||--o{ model_has_roles : "has role"
 ```
 
 ---
 
-# 9️⃣ مخطط النشر (Deployment Diagram)
+# 📌 القسم الخامس: بنية التطبيق (Application Architecture Layer)
 
-> البنية التحتية — تطبيق Flutter ↔ خادم Laravel ↔ قاعدة البيانات
+---
 
-```mermaid
-flowchart TB
+## 9️⃣ مخطط النشر (Deployment Diagram)
 
-    subgraph MOBILE["📱 جهاز الطالب / الدكتور (Android / iOS)"]
-        direction TB
-        subgraph FLUTTER["Flutter App — Dart 3.x"]
-            UI_LAYER["🎨 UI Screens\n25+ شاشة"]
-            SYNC_SVC["⚡ SyncService\n(Dio HTTP Client)"]
-            BL["📐 Business Logic\nModels & DTOs"]
-        end
-        subgraph SQLITE_LOCAL["🗄️ SQLite — Local Database"]
-            TBL1["users • courses • materials"]
-            TBL2["questions • results • payments"]
-            TBL3["complaints • chat_messages • settings"]
-        end
-        UI_LAYER <--> BL
-        BL <--> SYNC_SVC
-        BL <--> SQLITE_LOCAL
-        SYNC_SVC <--> SQLITE_LOCAL
-    end
+### 📋 الشرح:
+يوضح البنية التحتية الكاملة لنظام SASP وكيفية تواصل تطبيق Flutter مع خادم Laravel وقاعدة البيانات، مع توضيح البيئات المختلفة (التطوير والإنتاج).
 
-    subgraph ADMIN_PC["💻 جهاز الإداري (Windows / macOS)"]
-        BROWSER["🌐 Web Browser\nChrome / Firefox / Edge"]
-        WEB_UI["🎛️ Dashboard Web UI\nLaravel Blade + CSS"]
-        BROWSER <--> WEB_UI
-    end
+```plantuml
+@startuml SASP_DeploymentDiagram
+!theme blueprint
+title مخطط النشر — بنية نظام SASP
 
-    subgraph DEV_SERVER["🖥️ خادم التطوير — Windows PC"]
-        subgraph PHP_RUNTIME["PHP 8.2+ Runtime"]
-            subgraph LARAVEL["Laravel 12 Application"]
-                AUTH_CTRL["🔐 AuthController\nLogin / Logout"]
-                API_CTRL["📡 SaspApiController\nMobile API"]
-                DASH_CTRL["🎛️ DashboardController\nAdmin Panel"]
-                MIDDLEWARE["🛡️ Middleware\nAuth + Role + CSRF"]
-                MODELS["📦 Eloquent Models\n19 Model"]
-            end
-        end
-        subgraph DEV_DB["🗄️ SQLite — Development"]
-            DEV_FILE["database.sqlite"]
-        end
-        subgraph STORAGE_DEV["📂 Laravel Storage"]
-            S1["public/materials/"]
-            S2["public/images/"]
-            S3["public/receipts/"]
-        end
-        LARAVEL <--> DEV_DB
-        LARAVEL <--> STORAGE_DEV
-    end
+skinparam backgroundColor #1a1a2e
+skinparam node {
+  BackgroundColor #16213e
+  BorderColor #0f3460
+  FontColor #e0e0e0
+}
+skinparam component {
+  BackgroundColor #0f3460
+  BorderColor #e94560
+  FontColor #e0e0e0
+}
+skinparam database {
+  BackgroundColor #16213e
+  BorderColor #e94560
+  FontColor #e0e0e0
+}
+skinparam artifact {
+  BackgroundColor #0f3460
+  BorderColor #e94560
+  FontColor white
+}
+skinparam ArrowColor #e94560
 
-    subgraph PROD_SERVER["☁️ خادم الإنتاج — Cloud VPS"]
-        subgraph PROD_LARAVEL["Laravel 12 — Production"]
-            PROD_API["🌐 REST API\n/api/*"]
-            PROD_DASH["🎛️ Admin Dashboard\n/dashboard/*"]
-        end
-        subgraph PROD_MYSQL["🐬 MySQL 8.0+ — Production"]
-            DB_USERS["users • student_details"]
-            DB_ACADEMIC["courses • materials • questions"]
-            DB_SOCIAL["chat_rooms • chat_messages"]
-            DB_FINANCE["results • payments • complaints"]
-            DB_SYSTEM["settings • roles • permissions"]
-        end
-        subgraph CLOUD_STORAGE["☁️ Cloud Storage"]
-            CS1["PDF & Audio Books"]
-            CS2["Payment Receipts"]
-            CS3["Profile Images"]
-        end
-        PROD_LARAVEL <--> PROD_MYSQL
-        PROD_LARAVEL <--> CLOUD_STORAGE
-    end
+' =============================================
+' CLIENT — MOBILE DEVICE
+' =============================================
+node "📱 جهاز الطالب/الدكتور\n(Android / iOS)" as MobileDevice {
 
-    %% Connections
-    MOBILE -- "HTTP :8000\nREST API / JSON" --> DEV_SERVER
-    MOBILE -- "HTTPS :443\nREST API / JSON" --> PROD_SERVER
-    ADMIN_PC -- "HTTP :8000\nWeb Browser" --> DEV_SERVER
-    ADMIN_PC -- "HTTPS :443\nWeb Browser" --> PROD_SERVER
+  node "Flutter App\n(Dart/Flutter 3.x)" as FlutterApp {
+    component "🎨 UI Screens\n(25+ Screen)" as UIScreens
+    component "⚡ SyncService\n(Dio HTTP Client)" as SyncSvc
+    component "📐 Business Logic\n(Models & DTOs)" as BusinessLogic
+  }
 
-    style MOBILE fill:#0f3460,stroke:#e94560,color:#fff
-    style ADMIN_PC fill:#16213e,stroke:#0f3460,color:#e0e0e0
-    style DEV_SERVER fill:#1a1a2e,stroke:#0f3460,color:#e0e0e0
-    style PROD_SERVER fill:#1a1a2e,stroke:#27ae60,color:#e0e0e0
-    style FLUTTER fill:#0f3460,stroke:#e94560,color:#fff
-    style SQLITE_LOCAL fill:#16213e,stroke:#e94560,color:#e0e0e0
-    style LARAVEL fill:#16213e,stroke:#0f3460,color:#e0e0e0
-    style PROD_LARAVEL fill:#16213e,stroke:#27ae60,color:#e0e0e0
-    style PROD_MYSQL fill:#0f3460,stroke:#27ae60,color:#fff
+  database "🗄️ SQLite\n(Local Database)" as SQLiteDB {
+    artifact "users table"
+    artifact "courses table"
+    artifact "materials table"
+    artifact "questions table"
+    artifact "results table"
+    artifact "payments table"
+    artifact "complaints table"
+    artifact "chat_messages table"
+    artifact "settings table"
+  }
+
+  UIScreens --> BusinessLogic : calls
+  BusinessLogic --> SyncSvc : sync requests
+  BusinessLogic --> SQLiteDB : read/write
+  SyncSvc --> SQLiteDB : cache responses
+}
+
+' =============================================
+' CLIENT — ADMIN BROWSER
+' =============================================
+node "💻 جهاز الإداري\n(Windows / macOS / Linux)" as AdminDevice {
+
+  node "🌐 Web Browser\n(Chrome / Firefox / Edge)" as Browser {
+    component "🎛️ Dashboard Web UI\n(Laravel Blade + CSS)" as WebUI
+  }
+}
+
+' =============================================
+' SERVER — DEVELOPMENT ENVIRONMENT
+' =============================================
+node "🖥️ خادم التطوير\n(Windows PC Local)" as DevServer {
+
+  node "PHP Runtime\n(PHP 8.2+)" as PHPRuntime {
+
+    node "Laravel 12\nApplication" as LaravelApp {
+      component "🔐 AuthController\n(Login/Logout)" as AuthCtrl
+      component "📡 SaspApiController\n(Mobile API)" as ApiCtrl
+      component "🎛️ DashboardController\n(Admin Panel)" as DashCtrl
+      component "🛡️ Middleware Layer\n(Auth + Role + CSRF)" as MiddlewareLayer
+    }
+  }
+
+  database "🗄️ SQLite\n(Development DB)" as SQLiteDev {
+    artifact "database.sqlite (~240KB)"
+  }
+
+  node "📂 Storage\n(Laravel Storage)" as FileStorage {
+    artifact "public/materials/"
+    artifact "public/images/"
+    artifact "public/receipts/"
+  }
+}
+
+' =============================================
+' SERVER — PRODUCTION ENVIRONMENT
+' =============================================
+node "☁️ خادم الإنتاج\n(Cloud VPS / Shared Hosting)" as ProdServer {
+
+  node "PHP 8.2+ Runtime" as PHPProd {
+    node "Laravel 12\n(Production)" as LaravelProd {
+      component "🌐 REST API\n(/api/*)" as ProdAPI
+      component "🎛️ Admin Dashboard\n(/dashboard/*)" as ProdDash
+    }
+  }
+
+  database "🐬 MySQL 8.0+\n(Production DB)" as MySQLProd {
+    artifact "users"
+    artifact "courses"
+    artifact "educational_materials"
+    artifact "questions"
+    artifact "results"
+    artifact "payments"
+    artifact "complaints"
+    artifact "chat_rooms / messages"
+    artifact "settings"
+  }
+
+  node "☁️ Cloud Storage\n(AWS S3 / Local Disk)" as CloudStorage {
+    artifact "Uploaded Files"
+    artifact "PDF & Audio Books"
+    artifact "Payment Receipts"
+  }
+}
+
+' =============================================
+' COMMUNICATION PROTOCOLS
+' =============================================
+MobileDevice -down-> DevServer : HTTP REST API\n(JSON)\nport: 8000
+MobileDevice -down-> ProdServer : HTTPS REST API\n(JSON)\nport: 443
+
+AdminDevice -down-> DevServer : HTTP\n(Browser)\nport: 8000
+AdminDevice -down-> ProdServer : HTTPS\n(Browser)\nport: 443
+
+LaravelApp -right-> SQLiteDev : PDO / Eloquent ORM
+LaravelApp -right-> FileStorage : Laravel Storage Facade
+
+LaravelProd -right-> MySQLProd : PDO / Eloquent ORM
+LaravelProd -right-> CloudStorage : Storage::disk()
+
+note bottom of MobileDevice
+  التطبيق يعمل بدون إنترنت
+  عبر SQLite المحلية ويُزامن
+  عند عودة الاتصال
+end note
+
+note bottom of ProdServer
+  بيئة الإنتاج تستخدم MySQL
+  بدلاً من SQLite مع دعم
+  اتصالات متزامنة ≥ 500
+end note
+
+@enduml
 ```
 
 ---
 
-# 🔟 مخطط الحزم (Package Diagram)
+## 🔟 مخطط الحزم (Package Diagram)
 
-> تنظيم مكونات Flutter و Laravel والاعتماديات بينها
+### 📋 الشرح:
+يوضح التنظيم المعماري لمكونات نظام SASP والاعتماديات بين الحزم (Packages) في كلٍّ من تطبيق Flutter وخادم Laravel.
 
-```mermaid
-flowchart LR
+```plantuml
+@startuml SASP_PackageDiagram
+!theme blueprint
+title مخطط الحزم — بنية مكونات نظام SASP
 
-    subgraph FLUTTER_APP["📱 Flutter Application"]
-        direction TB
-        subgraph THEME["lib/theme"]
-            T1["app_theme.dart\nColors · Fonts · Material3"]
-        end
-        subgraph CORE["lib/core"]
-            direction TB
-            subgraph MODELS["models/"]
-                M1["user_model.dart\ncourse_model.dart\nmaterial_model.dart"]
-                M2["result_model.dart\npayment_model.dart\ncomplaint_model.dart"]
-                M3["chat_model.dart\nsettings_model.dart\nquestion_model.dart"]
-            end
-            subgraph DB_PKG["database/"]
-                DB1["database_helper.dart\nSQLite CRUD — 18 جدول"]
-            end
-            subgraph NETWORK["network/"]
-                N1["sync_service.dart\nDio HTTP Client"]
-            end
-            subgraph WIDGETS["widgets/"]
-                W1["top_app_bar.dart\nbottom_nav_bar.dart\nnavigation_drawer.dart"]
-            end
-        end
-        subgraph SCREENS["lib/screens"]
-            direction TB
-            SC1["auth/\nlogin · change_password"]
-            SC2["home/\nhome_screen"]
-            SC3["curriculum/\nPDF · Audio · Quiz"]
-            SC4["chat/\nForum · Private · Doctors"]
-            SC5["university/\nResults · Payments · Complaints"]
-            SC6["ai & graduation/\nAI Tools · Research · Graduation"]
-        end
-        THEME --> CORE
-        CORE --> SCREENS
-        NETWORK --> MODELS
-        DB_PKG --> MODELS
-    end
+skinparam backgroundColor #1a1a2e
+skinparam package {
+  BackgroundColor #16213e
+  BorderColor #0f3460
+  FontColor #e0e0e0
+}
+skinparam component {
+  BackgroundColor #0f3460
+  BorderColor #e94560
+  FontColor white
+}
+skinparam ArrowColor #e94560
+skinparam note {
+  BackgroundColor #0f3460
+  BorderColor #e94560
+  FontColor white
+}
 
-    subgraph LARAVEL_APP["⚙️ Laravel 12 Backend"]
-        direction TB
-        subgraph ROUTES["routes/"]
-            R1["api.php — /api/*"]
-            R2["web.php — /dashboard/*"]
-        end
-        subgraph CONTROLLERS["app/Http/Controllers"]
-            C1["AuthController\nWebLogin"]
-            C2["SaspApiController\nMobile API"]
-            C3["DashboardController\nAdmin Panel"]
-        end
-        subgraph MIDDLEWARE["app/Http/Middleware"]
-            MW1["CheckRole\nRole-based Access"]
-            MW2["Authenticate\nSanctum Token"]
-            MW3["VerifyCsrfToken\nCSRF Protection"]
-        end
-        subgraph LARAVEL_MODELS["app/Models"]
-            LM1["User · StudentDetail · Course"]
-            LM2["EducationalMaterial · Question"]
-            LM3["Result · Payment · Complaint"]
-            LM4["ChatRoom · ChatMessage · Announcement"]
-            LM5["GraduationProject · Setting"]
-        end
-        subgraph DATABASE["database/"]
-            D1["migrations/ — 18 migration"]
-            D2["seeders/ — RolePermissionSeeder\nUserSeeder · DatabaseSeeder"]
-        end
-        subgraph VIEWS["resources/views"]
-            V1["dashboard/*.blade.php"]
-            V2["auth/*.blade.php"]
-            V3["layouts/app.blade.php"]
-        end
-        ROUTES --> CONTROLLERS
-        CONTROLLERS --> MIDDLEWARE
-        CONTROLLERS --> LARAVEL_MODELS
-        CONTROLLERS --> VIEWS
-        LARAVEL_MODELS --> DATABASE
-    end
+' =============================================
+' FLUTTER APP PACKAGES
+' =============================================
+package "📱 Flutter Application" as FlutterApp {
 
-    subgraph FLUTTER_DEPS["📦 Flutter Dependencies"]
-        FD1["sqflite — SQLite"]
-        FD2["dio — HTTP"]
-        FD3["image_picker — Gallery"]
-        FD4["file_picker — Files"]
-        FD5["google_fonts"]
-        FD6["shared_preferences"]
-    end
+  package "lib/theme" as ThemePkg {
+    component "app_theme.dart\n(Colors, Fonts, Material3)"
+  }
 
-    subgraph LARAVEL_DEPS["📦 Laravel Dependencies"]
-        LD1["laravel/sanctum — Auth"]
-        LD2["spatie/permission — Roles"]
-        LD3["spatie/backup — Backup"]
-        LD4["intervention/image — Images"]
-        LD5["maatwebsite/excel — Export"]
-    end
+  package "lib/core" as CorePkg {
+    package "database" as DBPkg {
+      component "database_helper.dart\n(SQLite CRUD)"
+    }
+    package "models" as ModelsPkg {
+      component "user_model.dart"
+      component "course_model.dart"
+      component "material_model.dart"
+      component "question_model.dart"
+      component "result_model.dart"
+      component "payment_model.dart"
+      component "complaint_model.dart"
+      component "chat_model.dart"
+      component "settings_model.dart"
+    }
+    package "network" as NetworkPkg {
+      component "sync_service.dart\n(Dio HTTP)"
+    }
+    package "widgets" as WidgetsPkg {
+      component "top_app_bar.dart"
+      component "bottom_nav_bar.dart"
+      component "navigation_drawer.dart"
+    }
+  }
 
-    FLUTTER_APP -.->|depends on| FLUTTER_DEPS
-    LARAVEL_APP -.->|depends on| LARAVEL_DEPS
-    FLUTTER_APP == "REST API\nHTTP/HTTPS JSON" ==> LARAVEL_APP
+  package "lib/screens" as ScreensPkg {
+    package "auth" {
+      component "login_screen.dart"
+      component "change_password_screen.dart"
+    }
+    package "home" {
+      component "home_screen.dart"
+    }
+    package "curriculum" {
+      component "curriculum_options_screen.dart"
+      component "books_pdf_screen.dart"
+      component "audio_books_screen.dart"
+      component "questions_screen.dart"
+    }
+    package "chat" {
+      component "chat_portal_screen.dart"
+      component "student_forum_screen.dart"
+      component "doctors_chat_screen.dart"
+    }
+    package "university" {
+      component "results_portal_screen.dart"
+      component "payments_portal_screen.dart"
+      component "complaints_portal_screen.dart"
+    }
+    package "ai & tools" {
+      component "ai_portal_screen.dart"
+      component "ai_tools_screens.dart"
+    }
+    package "graduation & research" {
+      component "graduation_screen.dart"
+      component "research_screen.dart"
+    }
+    package "secondary" {
+      component "secondary_screens.dart\n(Settings, Profile)"
+    }
+  }
+}
 
-    style FLUTTER_APP fill:#0f3460,stroke:#e94560,color:#fff
-    style LARAVEL_APP fill:#1a1a2e,stroke:#27ae60,color:#fff
-    style FLUTTER_DEPS fill:#16213e,stroke:#0f3460,color:#e0e0e0
-    style LARAVEL_DEPS fill:#16213e,stroke:#0f3460,color:#e0e0e0
+' =============================================
+' LARAVEL BACKEND PACKAGES
+' =============================================
+package "⚙️ Laravel 12 Backend" as LaravelApp {
+
+  package "app/Http/Controllers" as ControllersLayer {
+    component "AuthController\n(Web Login)"
+    component "SaspApiController\n(Mobile API)"
+    component "DashboardController\n(Admin Panel)"
+  }
+
+  package "app/Http/Middleware" as MiddlewareLayer {
+    component "CheckRole\n(Role-based Access)"
+    component "VerifyCsrfToken\n(CSRF Protection)"
+    component "Authenticate\n(Sanctum Token)"
+  }
+
+  package "app/Models" as ModelsLayer {
+    component "User"
+    component "StudentDetail"
+    component "Course"
+    component "EducationalMaterial"
+    component "Question"
+    component "Announcement"
+    component "ChatRoom / ChatMessage"
+    component "Result"
+    component "Payment"
+    component "Complaint"
+    component "ResearchReport"
+    component "GraduationProject"
+    component "Setting"
+  }
+
+  package "database" as DatabaseLayer {
+    package "migrations" {
+      component "create_users_table"
+      component "create_academy_tables"
+      component "create_extended_content_tables"
+    }
+    package "seeders" {
+      component "RolePermissionSeeder"
+      component "UserSeeder"
+      component "DatabaseSeeder"
+    }
+  }
+
+  package "routes" as RoutesLayer {
+    component "web.php\n(Dashboard Routes)"
+    component "api.php\n(API Routes)"
+  }
+
+  package "resources/views" as ViewsLayer {
+    component "dashboard/*.blade.php"
+    component "auth/*.blade.php"
+    component "layouts/*.blade.php"
+  }
+
+  package "storage" as StorageLayer {
+    component "public/materials"
+    component "public/images"
+    component "public/receipts"
+  }
+}
+
+' =============================================
+' EXTERNAL DEPENDENCIES
+' =============================================
+package "📦 External Packages (Flutter)" as FlutterDeps {
+  component "sqflite\n(SQLite)"
+  component "dio\n(HTTP Client)"
+  component "google_fonts\n(Typography)"
+  component "image_picker\n(Gallery/Camera)"
+  component "file_picker\n(File Manager)"
+  component "shared_preferences"
+}
+
+package "📦 External Packages (Laravel)" as LaravelDeps {
+  component "laravel/sanctum\n(API Authentication)"
+  component "spatie/laravel-permission\n(Roles & Permissions)"
+  component "spatie/laravel-activitylog\n(Activity Log)"
+  component "spatie/laravel-backup\n(Backup)"
+  component "maatwebsite/excel\n(Excel Export)"
+  component "intervention/image\n(Image Processing)"
+}
+
+' =============================================
+' DEPENDENCIES
+' =============================================
+ScreensPkg --> CorePkg : uses
+CorePkg --> ThemePkg : uses
+NetworkPkg --> ModelsPkg : serializes
+DBPkg --> ModelsPkg : stores/retrieves
+
+ControllersLayer --> ModelsLayer : manipulates
+ControllersLayer --> MiddlewareLayer : protected by
+RoutesLayer --> ControllersLayer : routes to
+ControllersLayer --> ViewsLayer : renders
+ControllersLayer --> StorageLayer : stores files
+ModelsLayer --> DatabaseLayer : migrated/seeded
+
+FlutterApp ..> FlutterDeps : depends on
+LaravelApp ..> LaravelDeps : depends on
+
+FlutterApp ..> LaravelApp : REST API\n(JSON over HTTP/HTTPS)
+
+@enduml
 ```
 
 ---
 
-## 🛠️ كيفية عرض المخططات
+# 📌 جدول ملخص المخططات
 
-| الأداة | الطريقة |
-|--------|---------|
-| **VS Code** | ثبّت امتداد `Markdown Preview Mermaid Support` ثم افتح Preview |
-| **GitHub** | ارفع الملف مباشرةً — يرسم Mermaid تلقائياً |
-| **Obsidian** | افتح الملف — يدعم Mermaid افتراضياً |
-| **mermaid.live** | انسخ أي كود بين `‍‍‍```mermaid` و `‍‍‍```‍` والصقه |
-| **Notion** | استخدم block من نوع `/code` واختر `Mermaid` |
+| # | المخطط | الصيغة | الهدف |
+|---|--------|--------|-------|
+| 1 | Use-Case Diagram | PlantUML | الفاعلون وحالات الاستخدام |
+| 2 | Activity Diagram | PlantUML | سير عملية تسجيل الدخول والمزامنة |
+| 3 | Class Diagram | PlantUML | الفئات والعلاقات والتراتبية |
+| 4 | Sequence Diagram (Quiz) | PlantUML | تسلسل تنفيذ الاختبار التفاعلي |
+| 5 | Sequence Diagram (Sync) | PlantUML | تسلسل رفع المسودات الأوفلاين |
+| 6 | State Machine (Complaint) | PlantUML | دورة حياة كائن الشكوى |
+| 7 | State Machine (Payment) | PlantUML | دورة حياة كائن الدفعة |
+| 8 | ERD Diagram | Mermaid.js | تصميم قاعدة البيانات الكامل |
+| 9 | Deployment Diagram | PlantUML | البنية التحتية وبيئات النشر |
+| 10 | Package Diagram | PlantUML | تنظيم الحزم والاعتماديات |
 
 ---
 
-*تم إعداد هذه الوثيقة — مشروع SASP — جامعة سبأ — 27 يونيو 2026*
+## 🛠️ كيفية رسم المخططات
+
+### PlantUML:
+1. افتح [plantuml.com/plantuml](https://www.plantuml.com/plantuml/uml/)
+2. أو استخدم VS Code Extension: **PlantUML**
+3. انسخ الكود بين `@startuml` و `@enduml` والصقه
+
+### Mermaid.js (ERD):
+1. افتح [mermaid.live](https://mermaid.live/)
+2. أو استخدم VS Code Extension: **Markdown Preview Mermaid Support**
+3. انسخ كود الـ ERD بين ` ```mermaid ` و ` ``` ` والصقه
+
+---
+
+*تم إعداد هذه الوثيقة بتاريخ 27 يونيو 2026 — مشروع SASP — جامعة سبأ*
