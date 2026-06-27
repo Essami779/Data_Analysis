@@ -1088,6 +1088,15 @@ lib/
 
 
 
+
+
+
+
+
+
+
+
+
 # 🏗️ وثيقة المخططات الهندسية — UML Diagrams
 ## مشروع SASP — بوابة الطالب الأكاديمية الذكية
 ### Smart Academic Student Portal — جامعة سبأ
@@ -2039,33 +2048,12 @@ skinparam state {
 
 [*] --> Draft : الطالب يبدأ كتابة الشكوى
 
-state Draft {
-  : الطالب يملأ الموضوع والوصف
-}
-
-state LocalPending {
-  : محفوظة محلياً في SQLite\n is_synced = 0
-}
-
-state Pending {
-  : مستلمة في قاعدة بيانات السيرفر\n is_synced = 1
-  : تنتظر مراجعة الإدارة
-}
-
-state Reviewed {
-  : تحت المراجعة من قبل الإدارة
-  : معروضة في لوحة التحكم
-}
-
-state Resolved {
-  : تم حل الشكوى
-  : أُضيف رد ونتيجة
-}
-
-state Rejected {
-  : تم رفض الشكوى
-  : مع سبب الرفض
-}
+state Draft : الطالب يملأ الموضوع والوصف
+state LocalPending : محفوظة محلياً في SQLite\n is_synced = 0
+state Pending : مستلمة في قاعدة بيانات السيرفر\n is_synced = 1\n تنتظر مراجعة الإدارة
+state Reviewed : تحت المراجعة من قبل الإدارة\n معروضة في لوحة التحكم
+state Resolved : تم حل الشكوى\n أُضيف رد ونتيجة
+state Rejected : تم رفض الشكوى\n مع سبب الرفض
 
 Draft --> LocalPending : تأكيد الإرسال\n[لا يوجد إنترنت]
 
@@ -2122,32 +2110,11 @@ skinparam state {
 
 [*] --> Pending : الإدارة تنشئ دفعة جديدة\n/ POST /dashboard/payments
 
-state Pending {
-  : مبلغ مستحق وينتظر الدفع
-  : الطالب يرى الحالة "معلق"
-}
-
-state ReceiptUploaded {
-  : الطالب رفع الإيصال
-  : is_synced = 0 (أوفلاين)\nأو = 1 (أونلاين)
-  : تنتظر مراجعة الإدارة
-}
-
-state Paid {
-  : تأكيد الدفع بواسطة الإدارة
-  : سجل دائم في النظام
-}
-
-state Overdue {
-  : تجاوز موعد السداد
-  : يظهر للطالب بالأحمر
-  : إشعار تأخر السداد
-}
-
-state Rejected {
-  : الإيصال غير صحيح
-  : مع سبب الرفض
-}
+state Pending : مبلغ مستحق وينتظر الدفع\n الطالب يرى الحالة "معلق"
+state ReceiptUploaded : الطالب رفع الإيصال\n is_synced = 0 (أوفلاين) أو = 1 (أونلاين)\n تنتظر مراجعة الإدارة
+state Paid : تأكيد الدفع بواسطة الإدارة\n سجل دائم في النظام
+state Overdue : تجاوز موعد السداد\n يظهر للطالب بالأحمر\n إشعار تأخر السداد
+state Rejected : الإيصال غير صحيح\n مع سبب الرفض
 
 Pending --> ReceiptUploaded : الطالب يرفع الإيصال\n/ PUT /api/sync/payments\n{receipt_url, is_synced}
 
@@ -2175,326 +2142,278 @@ Paid --> [*] : انتهاء دورة الحياة (مكتمل)
 ## 8️⃣ مخطط الكيانات والعلاقات — ERD
 
 ### 📋 الشرح:
-يوضح التصميم الكامل لقاعدة البيانات العلائقية لخادم Laravel، مع المفاتيح الأساسية والأجنبية وأنواع العلاقات بين الجداول الـ 23.
+يوضح التصميم الكامل لقاعدة البيانات العلائقية لخادم Laravel، مع المفاتيح الأساسية والأجنبية وأنواع العلاقات بين الجداول.
 
-```mermaid
-erDiagram
+```plantuml
+@startuml SASP_ERD
+!theme blueprint
+title مخطط الكيانات والعلاقات (ERD) — نظام SASP
 
-    %% =================== USERS ===================
-    users {
-        BIGINT id PK
-        VARCHAR name
-        VARCHAR email
-        VARCHAR password
-        VARCHAR profile_image
-        VARCHAR thumbnail
-        INT status
-        VARCHAR role
-        VARCHAR phone_number
-        INT must_change_password
-        TIMESTAMP deleted_at
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+' hide the spot
+hide circle
+' avoid problems with angled crows feet
+skinparam linetype ortho
 
-    %% =================== STUDENT DETAILS ===================
-    student_details {
-        BIGINT user_id PK
-        VARCHAR university_id
-        VARCHAR major
-        INT level
-        FLOAT gpa
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+skinparam backgroundColor #1a1a2e
+skinparam class {
+  BackgroundColor #16213e
+  BorderColor #0f3460
+  FontColor #e0e0e0
+  HeaderBackgroundColor #0f3460
+}
 
-    %% =================== COURSES ===================
-    courses {
-        VARCHAR course_id PK
-        VARCHAR title
-        TEXT description
-        BIGINT doctor_id
-        INT credit_hours
-        VARCHAR department
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+entity users {
+  * id : BIGINT <<PK>>
+  --
+  * name : VARCHAR(255)
+  * email : VARCHAR(255) <<unique>>
+  * password : VARCHAR(255)
+  profile_image : VARCHAR(255)
+  thumbnail : VARCHAR(255)
+  * status : TINYINT
+  * role : ENUM
+  phone_number : VARCHAR(20)
+  * must_change_password : TINYINT
+  deleted_at : TIMESTAMP
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
 
-    %% =================== EDUCATIONAL MATERIALS ===================
-    educational_materials {
-        VARCHAR material_id PK
-        VARCHAR course_id FK
-        VARCHAR title
-        VARCHAR type
-        TEXT file_url
-        VARCHAR file_path
-        VARCHAR file_size
-        VARCHAR academic_year
-        VARCHAR semester
-        VARCHAR department
-        TEXT description
-        VARCHAR narrator
-        VARCHAR duration
-        VARCHAR image_path
-        TIMESTAMP uploaded_at
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+entity student_details {
+  * user_id : BIGINT <<PK, FK>>
+  --
+  * university_id : VARCHAR(50) <<unique>>
+  * major : VARCHAR(255)
+  * level : INT
+  * gpa : DOUBLE
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
 
-    %% =================== QUESTIONS ===================
-    questions {
-        VARCHAR question_id PK
-        VARCHAR course_id FK
-        TEXT question_text
-        TEXT options
-        VARCHAR correct_answer
-        VARCHAR difficulty_level
-        INT unit_number
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+entity courses {
+  * course_id : VARCHAR(50) <<PK>>
+  --
+  * title : VARCHAR(255)
+  description : TEXT
+  doctor_id : BIGINT <<FK>>
+  * credit_hours : INT
+  department : VARCHAR(255)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
 
-    %% =================== ANNOUNCEMENTS ===================
-    sasp_announcements {
-        VARCHAR announcement_id PK
-        VARCHAR title
-        TEXT content
-        BIGINT author_id FK
-        TIMESTAMP date_posted
-        VARCHAR target_audience
-        VARCHAR image_url
-        VARCHAR image_extension
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+entity educational_materials {
+  * material_id : VARCHAR(50) <<PK>>
+  --
+  * course_id : VARCHAR(50) <<FK>>
+  * title : VARCHAR(255)
+  * type : ENUM
+  * file_url : TEXT
+  file_path : VARCHAR(255)
+  file_size : VARCHAR(50)
+  academic_year : VARCHAR(20)
+  semester : VARCHAR(50)
+  department : VARCHAR(255)
+  description : TEXT
+  narrator : VARCHAR(255)
+  duration : VARCHAR(50)
+  image_path : VARCHAR(255)
+  uploaded_at : TIMESTAMP
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
 
-    %% =================== CHAT ROOMS ===================
-    sasp_chat_rooms {
-        VARCHAR room_id PK
-        VARCHAR title
-        VARCHAR type
-        BIGINT created_by FK
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+entity questions {
+  * question_id : VARCHAR(50) <<PK>>
+  --
+  * course_id : VARCHAR(50) <<FK>>
+  * question_text : TEXT
+  * options : TEXT
+  * correctAnswer : VARCHAR(255)
+  * difficulty_level : ENUM
+  unit_number : INT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
 
-    %% =================== CHAT MESSAGES ===================
-    sasp_chat_messages {
-        VARCHAR message_id PK
-        VARCHAR room_id FK
-        BIGINT sender_id FK
-        VARCHAR sender_name
-        TEXT message_text
-        VARCHAR media_type
-        VARCHAR media_path
-        TIMESTAMP sent_at
-        INT is_synced
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+entity sasp_announcements {
+  * announcement_id : VARCHAR(50) <<PK>>
+  --
+  * title : VARCHAR(255)
+  * content : TEXT
+  * author_id : BIGINT <<FK>>
+  * date_posted : TIMESTAMP
+  * target_audience : ENUM
+  image_url : VARCHAR(255)
+  image_extension : VARCHAR(10)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
 
-    %% =================== RESULTS ===================
-    results {
-        VARCHAR result_id PK
-        BIGINT student_id FK
-        VARCHAR course_id FK
-        VARCHAR course_title
-        VARCHAR grade
-        VARCHAR semester
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+entity sasp_chat_rooms {
+  * room_id : VARCHAR(50) <<PK>>
+  --
+  * title : VARCHAR(255)
+  * type : ENUM
+  * created_by : BIGINT <<FK>>
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
 
-    %% =================== PAYMENTS ===================
-    payments {
-        VARCHAR payment_id PK
-        BIGINT student_id FK
-        FLOAT amount
-        VARCHAR payment_status
-        TIMESTAMP payment_date
-        TEXT receipt_url
-        INT is_synced
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+entity sasp_chat_messages {
+  * message_id : VARCHAR(50) <<PK>>
+  --
+  * room_id : VARCHAR(50) <<FK>>
+  * sender_id : BIGINT <<FK>>
+  * sender_name : VARCHAR(255)
+  * message_text : TEXT
+  media_type : VARCHAR(20)
+  media_path : VARCHAR(255)
+  * sent_at : TIMESTAMP
+  * is_synced : INT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
 
-    %% =================== COMPLAINTS ===================
-    complaints {
-        VARCHAR complaint_id PK
-        BIGINT user_id FK
-        VARCHAR subject
-        TEXT description
-        ENUM status
-        TIMESTAMP submitted_at
-        INT is_synced
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+entity results {
+  * result_id : VARCHAR(50) <<PK>>
+  --
+  * student_id : BIGINT <<FK>>
+  * course_id : VARCHAR(50) <<FK>>
+  * course_title : VARCHAR(255)
+  * grade : VARCHAR(10)
+  * semester : VARCHAR(50)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
 
-    %% =================== RESEARCH REPORTS ===================
-    research_reports {
-        BIGINT id PK
-        BIGINT student_id FK
-        VARCHAR title
-        VARCHAR department
-        VARCHAR file_url
-        VARCHAR status
-        TEXT feedback
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+entity payments {
+  * payment_id : VARCHAR(50) <<PK>>
+  --
+  * student_id : BIGINT <<FK>>
+  * amount : DOUBLE
+  * payment_status : ENUM
+  payment_date : TIMESTAMP
+  receipt_url : TEXT
+  * is_synced : INT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
 
-    %% =================== GRADUATION PROJECTS ===================
-    graduation_projects {
-        BIGINT id PK
-        VARCHAR title
-        TEXT description
-        JSON students
-        VARCHAR supervisor
-        VARCHAR department
-        VARCHAR year
-        ENUM status
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+entity complaints {
+  * complaint_id : VARCHAR(50) <<PK>>
+  --
+  * user_id : BIGINT <<FK>>
+  * subject : VARCHAR(255)
+  * description : TEXT
+  * status : ENUM
+  * submitted_at : TIMESTAMP
+  * is_synced : INT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
 
-    %% =================== GRADUATION TASKS ===================
-    graduation_tasks {
-        BIGINT id PK
-        BIGINT project_id FK
-        VARCHAR student_name
-        VARCHAR task_title
-        ENUM status
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+entity research_reports {
+  * id : BIGINT <<PK>>
+  --
+  * student_id : BIGINT <<FK>>
+  * title : VARCHAR(255)
+  department : VARCHAR(255)
+  file_url : VARCHAR(255)
+  * status : VARCHAR(50)
+  feedback : TEXT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
 
-    %% =================== ACADEMIC TOOLS ===================
-    academic_tools {
-        BIGINT id PK
-        VARCHAR name
-        TEXT description
-        VARCHAR image_url
-        VARCHAR theme_color
-        VARCHAR version
-        VARCHAR developer
-        VARCHAR category
-        JSON academic_uses
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+entity graduation_projects {
+  * id : BIGINT <<PK>>
+  --
+  * title : VARCHAR(255)
+  description : TEXT
+  students : JSON
+  supervisor : VARCHAR(255)
+  department : VARCHAR(255)
+  year : VARCHAR(10)
+  * status : ENUM
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
 
-    %% =================== AI TOOLS ===================
-    ai_tools {
-        BIGINT id PK
-        VARCHAR name
-        VARCHAR description
-        TEXT long_description
-        VARCHAR icon_name
-        VARCHAR theme_color
-        VARCHAR category
-        VARCHAR highlight1_title
-        TEXT highlight1_desc
-        VARCHAR highlight2_title
-        TEXT highlight2_desc
-        JSON key_features
-        VARCHAR website_url
-        VARCHAR play_store_url
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+entity graduation_tasks {
+  * id : BIGINT <<PK>>
+  --
+  * project_id : BIGINT <<FK>>
+  * student_name : VARCHAR(255)
+  * task_title : VARCHAR(255)
+  * status : ENUM
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
 
-    %% =================== HOME ITEMS ===================
-    home_items {
-        BIGINT id PK
-        VARCHAR title
-        VARCHAR icon
-        VARCHAR route
-        VARCHAR image_url
-        VARCHAR color
-        BOOLEAN is_featured
-        INT sort_order
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+entity settings {
+  * id : BIGINT <<PK>>
+  --
+  * key : VARCHAR(100) <<unique>>
+  value : TEXT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
 
-    %% =================== CURRICULUM OPTIONS ===================
-    curriculum_options {
-        BIGINT id PK
-        VARCHAR title
-        TEXT description
-        VARCHAR icon
-        VARCHAR color
-        VARCHAR route
-        VARCHAR button_text
-        VARCHAR button_icon
-        VARCHAR button_color
-        INT sort_order
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+' Spatie tables
+entity roles {
+  * id : BIGINT <<PK>>
+  --
+  * name : VARCHAR(255) <<unique>>
+  * guard_name : VARCHAR(255)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
 
-    %% =================== SETTINGS ===================
-    settings {
-        BIGINT id PK
-        VARCHAR key UK
-        TEXT value
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+entity permissions {
+  * id : BIGINT <<PK>>
+  --
+  * name : VARCHAR(255) <<unique>>
+  * guard_name : VARCHAR(255)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
 
-    %% =================== SPATIE PERMISSION TABLES ===================
-    roles {
-        BIGINT id PK
-        VARCHAR name UK
-        VARCHAR guard_name
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+entity model_has_roles {
+  * role_id : BIGINT <<FK>>
+  * model_type : VARCHAR(255)
+  * model_id : BIGINT
+}
 
-    permissions {
-        BIGINT id PK
-        VARCHAR name UK
-        VARCHAR guard_name
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
-    }
+entity role_has_permissions {
+  * permission_id : BIGINT <<FK>>
+  * role_id : BIGINT <<FK>>
+}
 
-    model_has_roles {
-        BIGINT role_id FK
-        VARCHAR model_type
-        BIGINT model_id
-    }
+' Relations
+users ||--|| student_details : "has profile"
+users ||--o{ courses : "teaches"
+users ||--o{ results : "obtains"
+users ||--o{ payments : "makes"
+users ||--o{ complaints : "files"
+users ||--o{ sasp_announcements : "authors"
+users ||--o{ sasp_chat_rooms : "creates"
+users ||--o{ sasp_chat_messages : "sends"
+users ||--o{ research_reports : "submits"
 
-    role_has_permissions {
-        BIGINT permission_id FK
-        BIGINT role_id FK
-    }
+courses ||--o{ educational_materials : "contains"
+courses ||--o{ questions : "has"
+courses ||--o{ results : "linked to"
 
-    %% =================== RELATIONSHIPS ===================
+sasp_chat_rooms ||--o{ sasp_chat_messages : "contains"
+graduation_projects ||--o{ graduation_tasks : "has tasks"
 
-    users ||--o{ student_details : "has profile (1:1)"
-    users ||--o{ courses : "teaches (1:N)"
-    users ||--o{ results : "obtains (1:N)"
-    users ||--o{ payments : "makes (1:N)"
-    users ||--o{ complaints : "files (1:N)"
-    users ||--o{ sasp_announcements : "authors (1:N)"
-    users ||--o{ sasp_chat_rooms : "creates (1:N)"
-    users ||--o{ sasp_chat_messages : "sends (1:N)"
-    users ||--o{ research_reports : "submits (1:N)"
+roles ||--o{ model_has_roles : "assigned via"
+permissions ||--o{ role_has_permissions : "linked via"
+roles ||--o{ role_has_permissions : "has"
+users ||--o{ model_has_roles : "has role"
 
-    courses ||--o{ educational_materials : "contains (1:N)"
-    courses ||--o{ questions : "has questions (1:N)"
-    courses ||--o{ results : "linked to (1:N)"
-
-    sasp_chat_rooms ||--o{ sasp_chat_messages : "contains (1:N)"
-
-    graduation_projects ||--o{ graduation_tasks : "has tasks (1:N)"
-
-    roles ||--o{ model_has_roles : "assigned via"
-    permissions ||--o{ role_has_permissions : "linked via"
-    roles ||--o{ role_has_permissions : "has"
-    users ||--o{ model_has_roles : "has role"
+@enduml
 ```
 ---
 
@@ -2884,7 +2803,7 @@ FlutterApp ..> LaravelApp : REST API\n(JSON over HTTP/HTTPS)
 | 5 | Sequence Diagram (Sync) | PlantUML | تسلسل رفع المسودات الأوفلاين |
 | 6 | State Machine (Complaint) | PlantUML | دورة حياة كائن الشكوى |
 | 7 | State Machine (Payment) | PlantUML | دورة حياة كائن الدفعة |
-| 8 | ERD Diagram | Mermaid.js | تصميم قاعدة البيانات الكامل |
+| 8 | ERD Diagram | PlantUML | تصميم قاعدة البيانات الكامل |
 | 9 | Deployment Diagram | PlantUML | البنية التحتية وبيئات النشر |
 | 10 | Package Diagram | PlantUML | تنظيم الحزم والاعتماديات |
 
@@ -2892,15 +2811,10 @@ FlutterApp ..> LaravelApp : REST API\n(JSON over HTTP/HTTPS)
 
 ## 🛠️ كيفية رسم المخططات
 
-### PlantUML:
+### PlantUML (جميع المخططات العشرة):
 1. افتح [plantuml.com/plantuml](https://www.plantuml.com/plantuml/uml/)
-2. أو استخدم VS Code Extension: **PlantUML**
-3. انسخ الكود بين `@startuml` و `@enduml` والصقه
-
-### Mermaid.js (ERD):
-1. افتح [mermaid.live](https://mermaid.live/)
-2. أو استخدم VS Code Extension: **Markdown Preview Mermaid Support**
-3. انسخ كود الـ ERD بين ` ```mermaid ` و ` ``` ` والصقه
+2. أو استخدم امتداد (Extension) لـ VS Code باسم **PlantUML**
+3. انسخ كود أي مخطط من المخططات العشرة بين `@startuml` و `@enduml` والصقه ليظهر لك المخطط مباشرة.
 
 ---
 
