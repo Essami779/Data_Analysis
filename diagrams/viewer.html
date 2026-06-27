@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مخططات نظام SASP الأكاديمي — جامعة سبأ</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --panel-bg: rgba(17, 24, 39, 0.7);
+            --panel-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --accent-color: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            --accent-hover: #2563eb;
+            --danger-color: #ef4444;
+            --success-color: #10b981;
+            --sidebar-width: 320px;
+            --right-panel-width: 400px;
+            --glass-blur: 16px;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f3f4f6;
+            --panel-bg: rgba(255, 255, 255, 0.8);
+            --panel-border: rgba(0, 0, 0, 0.08);
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --accent-color: #2563eb;
+            --accent-glow: rgba(37, 99, 235, 0.3);
+            --accent-hover: #1d4ed8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        body {
+            font-family: 'Tajawal', 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--panel-border);
+        }
+
+        /* Sidebar Styling */
+        aside.sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--panel-border);
+            z-index: 10;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--panel-border);
+            text-align: center;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .sidebar-header p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .search-container {
+            padding: 16px 20px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 36px 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--panel-border);
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 32px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .diagram-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 12px 24px 12px;
+            list-style: none;
+        }
+
+        .diagram-item {
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .diagram-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .diagram-item.active {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
+        }
+
+        .diagram-number {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.08);
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+
+        .diagram-item.active .diagram-number {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .diagram-item-info {
+            flex: 1;
+        }
+
+        .diagram-item-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+
+        /* Main Workspace Styling */
+        main.workspace {
+            flex: 1;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: radial-gradient(circle at center, rgba(17, 24, 39, 0.3) 0%, rgba(11, 15, 25, 0.8) 100%);
+        }
+
+        .workspace-header {
+            height: 70px;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--panel-border);
+            z-index: 5;
+        }
+
+        .current-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .actions-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--panel-border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            outline: none;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            border-color: transparent;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Canvas Viewport */
+        .canvas-viewport {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: 
+                radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 0),
+                radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 0);
+            background-size: 24px 24px;
+            background-position: 0 0, 12px 12px;
+        }
+
+        .diagram-container {
+            width: 90%;
+            height: 90%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            cursor: grab;
+            user-select: none;
+        }
+
+        .diagram-container:active {
+            cursor: grabbing;
+        }
+
+        .diagram-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+        }
+
+        /* Canvas floating controls */
+        .floating-controls {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 40px;
+            z-index: 5;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        .control-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--panel-border);
+            background: rgba(17, 24, 39, 0.8);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .control-btn:hover {
+            background: var(--accent-color);
+            color: white;
+            border-color: transparent;
+        }
+
+        .zoom-badge {
+            padding: 0 12px;
+            height: 36px;
+            border-radius: 18px;
+            background: rgba(17, 24, 39, 0.8);
+            border: 1px solid var(--panel-border);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Right Detail Panel */
+        aside.detail-panel {
+            width: var(--right-panel-width);
+            height: 100vh;
+            border-right: 1px solid var(--panel-border);
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .panel-tab-header {
+            display: flex;
+            border-bottom: 1px solid var(--panel-border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 16px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+            background: rgba(59, 130, 246, 0.02);
+        }
+
+        .tab-content-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Details styling */
+        .detail-section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--accent-color);
+            border-bottom: 1px dashed var(--panel-border);
+            padding-bottom: 8px;
+        }
+
+        .desc-para {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .description-list {
+            margin-right: 20px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .description-list li {
+            margin-bottom: 8px;
+        }
+
+        .desc-subheader {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        /* Code block styling */
+        .code-wrapper {
+            position: relative;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            padding: 16px;
+            overflow: auto;
+            max-height: 500px;
+        }
+
+        pre.code-content {
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #818cf8;
+            white-space: pre-wrap;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--panel-border);
+            color: var(--text-secondary);
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+        }
+
+        .copy-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Toggle switches */
+        .theme-toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Quick Info Cards */
+        .quick-info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--panel-border);
+            border-radius: 6px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-card-icon {
+            font-size: 1.25rem;
+            color: var(--accent-color);
+            width: 30px;
+            text-align: center;
+        }
+
+        .info-card-content h5 {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 2px;
+        }
+
+        .info-card-content p {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 100;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar glass-panel">
+        <div class="sidebar-header">
+            <h1><i class="fa-solid fa-layer-group"></i> مخططات نظام SASP</h1>
+            <p>بوابة الطالب الأكاديمية الذكية — جامعة سبأ</p>
+        </div>
+        
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="searchBar" class="search-input" placeholder="ابحث عن مخطط...">
+        </div>
+
+        <ul class="diagram-list" id="diagramList">
+            <!-- Dynamically populated -->
+        </ul>
+        
+        <div style="padding: 16px; border-top: 1px solid var(--panel-border); text-align: center; font-size: 0.75rem; color: var(--text-secondary);">
+            إصدار النظام 1.0 — يونيو 2026
+        </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="workspace">
+        <div class="workspace-header glass-panel">
+            <div class="current-title" id="currentTitle">
+                <!-- Selected title -->
+            </div>
+            
+            <div class="actions-group">
+                <!-- Background Toggle -->
+                <button class="btn" id="bgToggle" title="تغيير لون خلفية المخطط">
+                    <i class="fa-solid fa-circle-half-stroke"></i>
+                    <span>الخلفية</span>
+                </button>
+                
+                <!-- Download SVG -->
+                <a href="#" class="btn btn-primary" id="downloadSvg" download>
+                    <i class="fa-solid fa-file-image"></i>
+                    <span>تنزيل SVG</span>
+                </a>
+                
+                <!-- Download PNG -->
+                <a href="#" class="btn" id="downloadPng" download>
+                    <i class="fa-solid fa-image"></i>
+                    <span>تنزيل PNG</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Canvas Viewport -->
+        <div class="canvas-viewport" id="viewport">
+            <div class="diagram-container" id="diagramContainer">
+                <img id="diagramImage" src="" alt="Diagram View">
+            </div>
+
+            <!-- Floating Controls -->
+            <div class="floating-controls glass-panel">
+                <button class="control-btn" id="zoomOut" title="تصغير"><i class="fa-solid fa-minus"></i></button>
+                <div class="zoom-badge" id="zoomBadge">100%</div>
+                <button class="control-btn" id="zoomIn" title="تكبير"><i class="fa-solid fa-plus"></i></button>
+                <button class="control-btn" id="zoomReset" title="إعادة ضبط"><i class="fa-solid fa-arrows-to-eye"></i></button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Right Detail Panel -->
+    <aside class="detail-panel glass-panel">
+        <div class="panel-tab-header">
+            <button class="tab-btn active" onclick="switchTab('desc')"><i class="fa-solid fa-align-right" style="margin-left:6px;"></i>الشرح والتحليل</button>
+            <button class="tab-btn" onclick="switchTab('code')"><i class="fa-solid fa-code" style="margin-left:6px;"></i>كود المصدر (UML)</button>
+        </div>
+
+        <div class="tab-content-container">
+            <!-- Description Tab -->
+            <div class="tab-content active" id="tab-desc">
+                <div class="detail-section-title">الوصف الفني للمخطط</div>
+                <div id="diagramExplanation">
+                    <!-- Dynamic explanation -->
+                </div>
+                
+                <div class="detail-section-title" style="margin-top:30px;">معلومات إضافية</div>
+                <div class="quick-info-grid">
+                    <div class="info-card">
+                        <div class="info-card-icon"><i class="fa-solid fa-compass-drafting"></i></div>
+                        <div class="info-card-content">
+                            <h5>صيغة الرسم الأصلية</h5>
+                            <p>PlantUML (Blueprint Theme)</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-icon"><i class="fa-solid fa-circle-nodes"></i></div>
+                        <div class="info-card-content">
+                            <h5>بيئة التنفيذ</h5>
+                            <p>Laravel 12 / Flutter 3.x</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-card-icon"><i class="fa-solid fa-university"></i></div>
+                        <div class="info-card-content">
+                            <h5>المؤسسة</h5>
+                            <p>جامعة سبأ — اليمن</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Code Tab -->
+            <div class="tab-content" id="tab-code">
+                <div class="detail-section-title">كود PlantUML</div>
+                <div class="code-wrapper">
+                    <button class="copy-btn" id="copyCodeBtn" title="نسخ الكود"><i class="fa-regular fa-copy"></i></button>
+                    <pre class="code-content"><code id="rawUmlCode"></code></pre>
+                </div>
+                <div style="margin-top: 16px; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">
+                    <i class="fa-solid fa-info-circle"></i> يمكنك تعديل هذا الكود وإعادة رسمه باستخدام محرر PlantUML الرسمي أو إضافات VS Code لتعديل بنية النظام.
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fa-solid fa-check-circle"></i>
+        <span id="toastMsg">تم النسخ بنجاح</span>
+    </div>
+
+    <!-- Data and JavaScript Logic -->
+    <script>
+        const DIAGRAMS_DATA = [
+    {
+        "id": 1,
+        "title": "1️⃣ مخطط حالات الاستخدام (Use-Case Diagram)",
+        "name": "SASP_UseCaseDiagram",
+        "svg_path": "svg\/SASP_UseCaseDiagram.svg",
+        "png_path": "png\/SASP_UseCaseDiagram.png",
+        "explanation": "<p class=\"desc-para\">يوضح هذا المخطط الفاعلين الأربعة الرئيسيين في نظام SASP (الطالب، الدكتور، الإدارة، الإدارة العليا) وحالات الاستخدام الخاصة بكل منهم. يتضمن علاقات `&lt;&lt;include&gt;&gt;` للعمليات المشتركة الإلزامية مثل المصادقة، وعلاقات `&lt;&lt;extend&gt;&gt;` للوظائف الاختيارية مثل تغيير كلمة المرور الإجبارية للطالب.<\/p>",
+        "raw_uml": "@startuml SASP_UseCaseDiagram\n!theme blueprint\ntitle مخطط حالات الاستخدام — نظام SASP\n\nskinparam actorStyle awesome\nskinparam backgroundColor #1a1a2e\nskinparam usecase {\n  BackgroundColor #16213e\n  BorderColor #0f3460\n  FontColor #e0e0e0\n  ArrowColor #e94560\n}\nskinparam actor {\n  BackgroundColor #0f3460\n  BorderColor #e94560\n  FontColor #e0e0e0\n}\nskinparam note {\n  BackgroundColor #0f3460\n  BorderColor #e94560\n  FontColor white\n}\n\nleft to right direction\n\n' ========== ACTORS ==========\nactor \"🎓 الطالب\\n(Student)\" as Student\nactor \"👨‍⚕️ الدكتور\\n(Doctor)\" as Doctor\nactor \"🏢 الإدارة\\n(Admin)\" as Admin\nactor \"👑 الإدارة العليا\\n(SuperAdmin)\" as SuperAdmin\nactor \"⚙️ نظام المزامنة\\n(Sync Engine)\" as SyncEngine <<system>>\n\n' ========== SYSTEM BOUNDARY ==========\nrectangle \"نظام SASP\" {\n\n  ' -- Authentication --\n  usecase \"تسجيل الدخول\\n(Login)\" as UC_Login\n  usecase \"تغيير كلمة المرور\\n(Change Password)\" as UC_ChangePass\n  usecase \"تغيير المرور الإجباري\\n(Forced Change)\" as UC_ForcedChange\n  usecase \"تسجيل الخروج\\n(Logout)\" as UC_Logout\n\n  ' -- Sync --\n  usecase \"مزامنة البيانات\\n(Sync Data)\" as UC_Sync\n  usecase \"رفع المسودات المحلية\\n(Push Drafts)\" as UC_PushDrafts\n\n  ' -- Curriculum --\n  usecase \"تصفح الكتب PDF\\n(Browse PDF Books)\" as UC_PDF\n  usecase \"الاستماع للكتب الصوتية\\n(Audio Books)\" as UC_Audio\n  usecase \"بنك الأسئلة والاختبارات\\n(Question Bank)\" as UC_Quiz\n  usecase \"عرض تقرير الأداء\\n(Performance Report)\" as UC_Report\n\n  ' -- Academic Results --\n  usecase \"عرض درجاتي\\n(My Results)\" as UC_MyResults\n  usecase \"إدخال الدرجات\\n(Enter Grades)\" as UC_EnterGrades\n\n  ' -- Payments --\n  usecase \"متابعة المدفوعات\\n(Track Payments)\" as UC_Payments\n  usecase \"رفع إيصال الدفع\\n(Upload Receipt)\" as UC_Receipt\n  usecase \"الموافقة على المدفوعات\\n(Approve Payments)\" as UC_ApprovePayments\n\n  ' -- Complaints --\n  usecase \"تقديم شكوى\\n(File Complaint)\" as UC_Complaint\n  usecase \"حل الشكاوى\\n(Resolve Complaints)\" as UC_ResolveComplaint\n\n  ' -- Chat --\n  usecase \"منتدى الطلاب\\n(Student Forum)\" as UC_Forum\n  usecase \"دردشة خاصة\\n(Private Chat)\" as UC_PrivateChat\n  usecase \"إرسال وسائط\\n(Send Media)\" as UC_Media\n\n  ' -- Graduation & Research --\n  usecase \"رفع تقرير بحثي\\n(Upload Research)\" as UC_Research\n  usecase \"مراجعة التقارير\\n(Review Reports)\" as UC_ReviewReport\n  usecase \"إدارة مشاريع التخرج\\n(Graduation Projects)\" as UC_Graduation\n\n  ' -- Admin Panel --\n  usecase \"إدارة الطلاب\\n(Manage Students)\" as UC_ManageStudents\n  usecase \"إدارة الدكاترة\\n(Manage Doctors)\" as UC_ManageDoctors\n  usecase \"نشر الإعلانات\\n(Post Announcements)\" as UC_Announcements\n  usecase \"رفع المواد التعليمية\\n(Upload Materials)\" as UC_Materials\n  usecase \"إعدادات النظام\\n(System Settings)\" as UC_Settings\n  usecase \"إدارة الأدوار والصلاحيات\\n(Manage Roles)\" as UC_Roles\n  usecase \"النسخ الاحتياطية\\n(Backup System)\" as UC_Backup\n  usecase \"تخصيص التطبيق\\n(Customize App)\" as UC_Customize\n}\n\n' ========== STUDENT ASSOCIATIONS ==========\nStudent --> UC_Login\nStudent --> UC_Sync\nStudent --> UC_PDF\nStudent --> UC_Audio\nStudent --> UC_Quiz\nStudent --> UC_MyResults\nStudent --> UC_Payments\nStudent --> UC_Receipt\nStudent --> UC_Complaint\nStudent --> UC_Forum\nStudent --> UC_PrivateChat\nStudent --> UC_Research\nStudent --> UC_ChangePass\n\n' ========== DOCTOR ASSOCIATIONS ==========\nDoctor --> UC_Login\nDoctor --> UC_EnterGrades\nDoctor --> UC_Materials\nDoctor --> UC_ReviewReport\nDoctor --> UC_PrivateChat\nDoctor --> UC_Graduation\n\n' ========== ADMIN ASSOCIATIONS ==========\nAdmin --> UC_Login\nAdmin --> UC_ManageStudents\nAdmin --> UC_ManageDoctors\nAdmin --> UC_Announcements\nAdmin --> UC_ApprovePayments\nAdmin --> UC_ResolveComplaint\nAdmin --> UC_Materials\nAdmin --> UC_Graduation\nAdmin --> UC_Settings\n\n' ========== SUPERADMIN ASSOCIATIONS ==========\nSuperAdmin --> UC_Login\nSuperAdmin --> UC_ManageStudents\nSuperAdmin --> UC_ManageDoctors\nSuperAdmin --> UC_Roles\nSuperAdmin --> UC_Backup\nSuperAdmin --> UC_Customize\nSuperAdmin --> UC_Settings\n\n' ========== SYNC ENGINE ==========\nSyncEngine --> UC_Sync\nSyncEngine --> UC_PushDrafts\n\n' ========== INCLUDE RELATIONSHIPS ==========\nUC_Login ..> UC_Sync : <<include>>\nUC_Quiz ..> UC_Report : <<include>>\nUC_PrivateChat ..> UC_Media : <<include>>\nUC_Receipt ..> UC_PushDrafts : <<include>>\nUC_Complaint ..> UC_PushDrafts : <<include>>\n\n' ========== EXTEND RELATIONSHIPS ==========\nUC_ForcedChange ..> UC_Login : <<extend>>\\ncondition: أول دخول للطالب\nUC_ChangePass ..> UC_Login : <<extend>>\n\nnote right of UC_ForcedChange\n  يُفعَّل فقط عندما تكون\n  كلمة مرور الطالب\n  هي الافتراضية (123456)\nend note\n\nnote bottom of UC_Sync\n  تشمل: سحب الإعلانات،\n  المواد، الدرجات، المدفوعات،\n  الأسئلة، الكتب\nend note\n\n@enduml"
+    },
+    {
+        "id": 2,
+        "title": "2️⃣ مخطط النشاط (Activity Diagram) — عملية المزامنة الكاملة",
+        "name": "SASP_ActivityDiagram",
+        "svg_path": "svg\/SASP_ActivityDiagram.svg",
+        "png_path": "png\/SASP_ActivityDiagram.png",
+        "explanation": "<p class=\"desc-para\">يوضح هذا المخطط سير العمل الكامل لأهم عملية في نظام SASP وهي <strong>دورة تسجيل الدخول والمزامنة<\/strong>. يستخدم Swimlanes لفصل مهام الطالب عن نظام Flutter عن خادم Laravel، مع معالجة سيناريو العمل بدون إنترنت.<\/p>",
+        "raw_uml": "@startuml SASP_ActivityDiagram\n!theme blueprint\ntitle مخطط النشاط — دورة تسجيل الدخول والمزامنة\n\nskinparam backgroundColor #1a1a2e\nskinparam activity {\n  BackgroundColor #16213e\n  BorderColor #0f3460\n  FontColor #e0e0e0\n  ArrowColor #e94560\n  StartColor #e94560\n  EndColor #e94560\n  BarColor #e94560\n}\nskinparam swimlane {\n  TitleFontColor #e0e0e0\n  BorderColor #0f3460\n}\n\n|#1a1a2e| 🎓 الطالب (User)|\n|#16213e| 📱 تطبيق Flutter|\n|#0f3460| ⚙️ Laravel Backend|\n\n|🎓 الطالب (User)|\nstart\n:فتح التطبيق;\n\n|📱 تطبيق Flutter|\n:تحميل إعدادات السيرفر\\nمن SQLite المحلية;\n:عرض شاشة Splash;\n\nif (يوجد توكن محفوظ؟) then (نعم)\n  :التحقق من صلاحية التوكن;\n  if (التوكن صالح؟) then (نعم)\n    :الانتقال للشاشة الرئيسية;\n  else (لا)\n    :حذف التوكن المنتهي;\n    :عرض شاشة تسجيل الدخول;\n  endif\nelse (لا)\n  :عرض شاشة تسجيل الدخول;\nendif\n\n|🎓 الطالب (User)|\n:إدخال بيانات الدخول\\n(رقم أكاديمي \/ بريد إلكتروني\\nوكلمة المرور);\n:الضغط على \"تسجيل الدخول\";\n\n|📱 تطبيق Flutter|\n:التحقق من صحة المدخلات\\n(Client-Side Validation);\n\nif (هل هناك اتصال بالإنترنت؟) then (لا - وضع أوفلاين)\n  :البحث عن بيانات محفوظة\\nفي SQLite المحلي;\n  if (تسجيل الدخول من قبل؟) then (نعم)\n    :تسجيل الدخول محلياً\\n(Offline Login Cache);\n    :عرض إشعار \"وضع أوفلاين\";\n    :الانتقال للشاشة الرئيسية\\nبالبيانات المحلية;\n  else (لا)\n    :عرض خطأ:\\n\"يتطلب اتصالاً بالإنترنت\\nللمرة الأولى\";\n    stop\n  endif\nelse (نعم - متصل)\n\n  :إرسال طلب POST \/api\/login\\n{identifier, password};\n\n  |⚙️ Laravel Backend|\n  :استقبال طلب المصادقة;\n  if (هل المعرّف رقم أكاديمي؟) then (نعم)\n    :البحث في student_details\\nبالرقم الأكاديمي;\n  else (لا - بريد إلكتروني)\n    :البحث في users\\nبالبريد الإلكتروني;\n  endif\n\n  if (المستخدم موجود؟) then (لا)\n    :إرجاع 401 Unauthorized;\n    |📱 تطبيق Flutter|\n    :عرض خطأ: \"البيانات غير صحيحة\";\n  else (نعم)\n    :التحقق من كلمة المرور\\n(bcrypt verify);\n    if (كلمة المرور صحيحة؟) then (لا)\n      :إرجاع 401 Unauthorized;\n      |📱 تطبيق Flutter|\n      :عرض خطأ: \"كلمة المرور خاطئة\";\n    else (نعم)\n      :إنشاء Sanctum Token;\n      :إرجاع 200 OK\\n{token, user, role,\\nmust_change_password};\n\n      |📱 تطبيق Flutter|\n      :حفظ التوكن وبيانات\\nالمستخدم في SQLite;\n\n      if (must_change_password = true؟) then (نعم)\n        :فتح شاشة تغيير\\nكلمة المرور الإجبارية;\n        |🎓 الطالب (User)|\n        :إدخال كلمة المرور الجديدة;\n        |📱 تطبيق Flutter|\n        :إرسال POST \/api\/change-password;\n        |⚙️ Laravel Backend|\n        :تحديث كلمة المرور\\nوضبط must_change_password = 0;\n        |📱 تطبيق Flutter|\n      else (لا)\n      endif\n\n      :بدء عملية المزامنة الشاملة;\n      :إرسال GET \/api\/sync\\nمع Bearer Token;\n\n      |⚙️ Laravel Backend|\n      :جمع جميع بيانات المستخدم\\nحسب دوره (Role-based Filtering);\n      :إرجاع JSON شامل:\\n{settings, courses, materials,\\nannouncements, results,\\npayments, complaints, questions};\n\n      |📱 تطبيق Flutter|\n      :فتح معاملة SQLite\\n(Transaction);\n      :تحديث جميع جداول SQLite\\nبالبيانات الجديدة;\n      :إغلاق المعاملة;\n\n      :البحث عن مسودات محلية\\n(is_synced = 0);\n      if (توجد مسودات؟) then (نعم)\n        :إرسال POST \/api\/sync\/messages;\n        :إرسال POST \/api\/sync\/complaints;\n        :إرسال POST \/api\/sync\/payments;\n        |⚙️ Laravel Backend|\n        :حفظ المسودات في قاعدة البيانات;\n        |📱 تطبيق Flutter|\n        :تحديث is_synced = 1\\nللمسودات المرفوعة;\n      else (لا)\n      endif\n\n      :الانتقال للشاشة الرئيسية;\n\n      |🎓 الطالب (User)|\n      :تصفح التطبيق;\n    endif\n  endif\nendif\n\nstop\n@enduml"
+    },
+    {
+        "id": 3,
+        "title": "3️⃣ مخطط الفئات (Class Diagram)",
+        "name": "SASP_ClassDiagram",
+        "svg_path": "svg\/SASP_ClassDiagram.svg",
+        "png_path": "png\/SASP_ClassDiagram.png",
+        "explanation": "<p class=\"desc-para\">يوضح الفئات الأساسية في مجال مشكلة SASP مع خصائصها وعملياتها والعلاقات بينها. يتضمن التراتبية (Generalization) من `User` إلى الأدوار المختلفة، والتجميع (Aggregation) بين `Course` و`EducationalMaterial`، والارتباط (Association) بين مختلف الفئات.<\/p>",
+        "raw_uml": "@startuml SASP_ClassDiagram\n!theme blueprint\ntitle مخطط الفئات — نظام SASP\n\nskinparam backgroundColor #1a1a2e\nskinparam class {\n  BackgroundColor #16213e\n  BorderColor #0f3460\n  FontColor #e0e0e0\n  ArrowColor #e94560\n  HeaderBackgroundColor #0f3460\n}\nskinparam note {\n  BackgroundColor #0f3460\n  BorderColor #e94560\n  FontColor white\n}\n\n' =============================================\n' BASE CLASS — User\n' =============================================\nabstract class User {\n  - id: int\n  - name: String\n  - email: String\n  - password: String\n  - profileImage: String\n  - status: boolean\n  - role: Role\n  - mustChangePassword: boolean\n  - createdAt: DateTime\n  + login(identifier: String, password: String): AuthToken\n  + logout(): void\n  + changePassword(old: String, new: String): boolean\n  + updateProfile(data: Map): boolean\n  + getRole(): Role\n}\n\nenum Role {\n  STUDENT\n  DOCTOR\n  ADMIN\n  SUPER_ADMIN\n}\n\n' =============================================\n' SUBCLASSES\n' =============================================\nclass Student {\n  - universityId: String\n  - major: String\n  - level: int\n  - gpa: double\n  + getResults(): List<Result>\n  + getPayments(): List<Payment>\n  + submitComplaint(subject: String, desc: String): Complaint\n  + uploadReceipt(file: File): Payment\n  + uploadResearchReport(title: String, file: File): ResearchReport\n  + startQuiz(courseId: String): Quiz\n  + syncData(): SyncResult\n}\n\nclass Doctor {\n  + getStudentList(): List<Student>\n  + enterGrade(studentId: int, courseId: String, grade: String): Result\n  + uploadMaterial(material: EducationalMaterial): boolean\n  + reviewReport(reportId: int, status: String, feedback: String): boolean\n  + startPrivateChat(studentId: int): ChatRoom\n}\n\nclass Admin {\n  + createStudent(data: Map): Student\n  + createDoctor(data: Map): Doctor\n  + approvePayment(paymentId: String): boolean\n  + resolveComplaint(complaintId: String, response: String): boolean\n  + postAnnouncement(announcement: Announcement): boolean\n  + uploadMaterial(material: EducationalMaterial): boolean\n}\n\nclass SuperAdmin {\n  + assignRole(userId: int, role: Role): boolean\n  + createRole(name: String, permissions: List): Role\n  + backupDatabase(): BackupFile\n  + customizeApp(name: String, logo: File): boolean\n  + managePermissions(): List<Permission>\n}\n\n' Generalization (Inheritance)\nUser <|-- Student : extends\nUser <|-- Doctor : extends\nUser <|-- Admin : extends\nUser <|-- SuperAdmin : extends\n\nUser --> Role : has\n\n' =============================================\n' COURSE\n' =============================================\nclass Course {\n  - courseId: String\n  - title: String\n  - description: String\n  - creditHours: int\n  - department: String\n  - doctor: Doctor\n  + getMaterials(): List<EducationalMaterial>\n  + getQuestions(): List<Question>\n  + getResults(): List<Result>\n}\n\n' =============================================\n' EDUCATIONAL MATERIAL\n' =============================================\nclass EducationalMaterial {\n  - materialId: String\n  - title: String\n  - type: MaterialType\n  - fileUrl: String\n  - fileSize: String\n  - academicYear: String\n  - semester: String\n  - narrator: String\n  - duration: String\n  - uploadedAt: DateTime\n  + getFileUrl(): String\n  + getMetadata(): Map\n}\n\nenum MaterialType {\n  PDF\n  AUDIO\n  VIDEO\n  LINK\n}\n\nEducationalMaterial --> MaterialType : type\n\n' =============================================\n' QUESTION & QUIZ\n' =============================================\nclass Question {\n  - questionId: String\n  - questionText: String\n  - options: List<String>\n  - correctAnswer: String\n  - difficultyLevel: String\n  - unitNumber: int\n  + checkAnswer(answer: String): boolean\n}\n\nclass Quiz {\n  - questions: List<Question>\n  - studentAnswers: Map<String, String>\n  - score: double\n  - startedAt: DateTime\n  + submitAnswer(questionId: String, answer: String): void\n  + calculateScore(): double\n  + generateReport(): QuizReport\n  + finish(): QuizReport\n}\n\nclass QuizReport {\n  - score: double\n  - percentage: double\n  - correctCount: int\n  - wrongCount: int\n  - level: String\n  + display(): void\n}\n\nQuiz \"1\" --> \"*\" Question : contains\nQuiz \"1\" --> \"1\" QuizReport : generates\n\n' =============================================\n' RESULT\n' =============================================\nclass Result {\n  - resultId: String\n  - courseTitle: String\n  - grade: String\n  - semester: String\n  + getGradePoint(): double\n}\n\n' =============================================\n' PAYMENT\n' =============================================\nclass Payment {\n  - paymentId: String\n  - amount: double\n  - status: PaymentStatus\n  - paymentDate: DateTime\n  - receiptUrl: String\n  - isSynced: boolean\n  + approve(): void\n  + reject(reason: String): void\n  + uploadReceipt(file: File): String\n}\n\nenum PaymentStatus {\n  PAID\n  PENDING\n  OVERDUE\n}\n\nPayment --> PaymentStatus : status\n\n' =============================================\n' COMPLAINT\n' =============================================\nclass Complaint {\n  - complaintId: String\n  - subject: String\n  - description: String\n  - status: ComplaintStatus\n  - submittedAt: DateTime\n  - isSynced: boolean\n  + resolve(response: String): void\n  + markReviewed(): void\n}\n\nenum ComplaintStatus {\n  PENDING\n  REVIEWED\n  RESOLVED\n}\n\nComplaint --> ComplaintStatus : status\n\n' =============================================\n' ANNOUNCEMENT\n' =============================================\nclass Announcement {\n  - announcementId: String\n  - title: String\n  - content: String\n  - datePosted: DateTime\n  - targetAudience: String\n  - imageUrl: String\n  + publish(): void\n  + delete(): void\n}\n\n' =============================================\n' CHAT\n' =============================================\nclass ChatRoom {\n  - roomId: String\n  - title: String\n  - type: ChatRoomType\n  + sendMessage(message: ChatMessage): void\n  + getMessages(): List<ChatMessage>\n  + addParticipant(userId: int): void\n}\n\nenum ChatRoomType {\n  PRIVATE\n  GROUP\n  FORUM\n}\n\nclass ChatMessage {\n  - messageId: String\n  - senderName: String\n  - messageText: String\n  - mediaType: String\n  - mediaPath: String\n  - timestamp: DateTime\n  - isSynced: boolean\n  + markAsSynced(): void\n}\n\nChatRoom --> ChatRoomType : type\nChatRoom \"1\" *-- \"*\" ChatMessage : contains\n\n' =============================================\n' RESEARCH REPORT\n' =============================================\nclass ResearchReport {\n  - title: String\n  - department: String\n  - fileUrl: String\n  - status: String\n  - feedback: String\n  + submit(): void\n  + review(status: String, feedback: String): void\n}\n\n' =============================================\n' GRADUATION\n' =============================================\nclass GraduationProject {\n  - title: String\n  - description: String\n  - students: List<String>\n  - supervisor: String\n  - department: String\n  - year: String\n  - status: String\n  + addTask(task: GraduationTask): void\n  + getTasks(): List<GraduationTask>\n}\n\nclass GraduationTask {\n  - taskTitle: String\n  - studentName: String\n  - status: String\n  + complete(): void\n}\n\nGraduationProject \"1\" *-- \"*\" GraduationTask : has\n\n' =============================================\n' SETTINGS\n' =============================================\nclass Setting {\n  - key: String\n  - value: String\n  + get(key: String): String\n  + set(key: String, value: String): void\n}\n\n' =============================================\n' SYNC SERVICE\n' =============================================\nclass SyncService {\n  - apiBaseUrl: String\n  - authToken: String\n  + login(identifier: String, password: String): AuthToken\n  + syncAll(): SyncResult\n  + pushDrafts(): void\n  + testConnection(): boolean\n}\n\nclass DatabaseHelper {\n  + insert(table: String, data: Map): int\n  + update(table: String, data: Map, where: Map): int\n  + query(table: String, where: Map): List<Map>\n  + syncSnapshot(data: Map): void\n  + getUnsynced(table: String): List<Map>\n}\n\n' =============================================\n' ASSOCIATIONS\n' =============================================\nDoctor \"1\" --> \"*\" Course : teaches\nCourse \"1\" *-- \"*\" EducationalMaterial : contains\nCourse \"1\" *-- \"*\" Question : has\n\nStudent \"1\" --> \"*\" Result : obtains\nStudent \"1\" --> \"*\" Payment : makes\nStudent \"1\" --> \"*\" Complaint : files\nStudent \"1\" --> \"*\" ResearchReport : submits\nStudent \"1\" --> \"1\" Quiz : takes\n\nAdmin \"1\" --> \"*\" Announcement : posts\nUser \"1\" --> \"*\" ChatRoom : participates\nUser \"1\" --> \"*\" ChatMessage : sends\n\nSyncService --> DatabaseHelper : uses\nSyncService ..> User : authenticates\n\nnote top of SyncService\n  يعمل بمكتبة Dio في Flutter\n  للتواصل مع Laravel API\n  ويدير المزامنة الثنائية\nend note\n\nnote bottom of DatabaseHelper\n  يُدير SQLite المحلي في الجوال\n  ويدعم 18 جدولاً مترابطة\n  للعمل بدون إنترنت\nend note\n\n@enduml"
+    },
+    {
+        "id": 4,
+        "title": "4️⃣ مخطط التسلسل (Sequence Diagram) — عملية الاختبار التفاعلي",
+        "name": "SASP_SequenceDiagram",
+        "svg_path": "svg\/SASP_SequenceDiagram.svg",
+        "png_path": "png\/SASP_SequenceDiagram.png",
+        "explanation": "<p class=\"desc-para\">يوضح التفاعل الديناميكي بين الكائنات خلال تنفيذ عملية <strong>بدء اختبار تفاعلي وعرض نتيجته<\/strong>. يتضح فيه تمرير الرسائل عبر الزمن بين الطالب وتطبيق Flutter وقاعدة البيانات المحلية.<\/p>",
+        "raw_uml": "@startuml SASP_SequenceDiagram\n!theme blueprint\ntitle مخطط التسلسل — عملية الاختبار التفاعلي\n\nskinparam backgroundColor #1a1a2e\nskinparam sequence {\n  ParticipantBackgroundColor #16213e\n  ParticipantBorderColor #0f3460\n  ParticipantFontColor #e0e0e0\n  ArrowColor #e94560\n  LifeLineBorderColor #0f3460\n  ActorBackgroundColor #0f3460\n  ActorBorderColor #e94560\n  ActorFontColor #e0e0e0\n  BoxBackgroundColor #1a1a2e\n  BoxBorderColor #0f3460\n  NoteBackgroundColor #0f3460\n  NoteBorderColor #e94560\n  NoteFontColor white\n}\n\nactor \"🎓 الطالب\" as Student\nparticipant \"📱 QuestionsScreen\\n(Flutter UI)\" as UI\nparticipant \"🗄️ DatabaseHelper\\n(SQLite)\" as DB\nparticipant \"📊 Quiz\\n(Business Logic)\" as Quiz\nparticipant \"📋 QuizReport\\n(Report Generator)\" as Report\n\n== تهيئة الاختبار ==\n\nStudent -> UI : فتح صفحة بنك الأسئلة\nactivate UI\n\nUI -> DB : query('courses', {student_level})\nactivate DB\nDB --> UI : List<Course>\ndeactivate DB\n\nUI --> Student : عرض قائمة المواد الدراسية\n\nStudent -> UI : اختيار مادة + مستوى صعوبة + وحدات\nUI -> DB : query('questions', {course_id, difficulty, units})\nactivate DB\nDB --> UI : List<Question>\ndeactivate DB\n\nUI -> Quiz : create(questions: List<Question>)\nactivate Quiz\nQuiz --> UI : quizInstance (جاهز للبدء)\n\nUI --> Student : عرض شاشة الاختبار\\n(السؤال الأول)\n\n== دورة الاختبار ==\n\nloop لكل سؤال في الاختبار\n\n  Student -> UI : اختيار إجابة (A\/B\/C\/D)\n  UI -> Quiz : submitAnswer(questionId, selectedAnswer)\n  Quiz --> UI : تحديث حالة السؤال\n\n  alt سؤال أخير؟\n    UI --> Student : عرض زر \"إنهاء الاختبار\"\n  else\n    UI --> Student : عرض السؤال التالي\n  end\n\nend\n\n== إنهاء الاختبار وحساب النتيجة ==\n\nStudent -> UI : ضغط \"إنهاء الاختبار\"\nUI -> Quiz : finish()\nactivate Quiz #darkgreen\nQuiz -> Quiz : calculateScore()\nnote right: الحساب:\\n(صح \/ المجموع) × 100\nQuiz -> Report : create(score, correct, wrong)\nactivate Report\nReport -> Report : determineLevel()\nnote right: ≥90% → ممتاز\\n≥70% → جيد\\n≥50% → مقبول\\n<50% → ضعيف\nReport --> Quiz : reportInstance\ndeactivate Report\nQuiz --> UI : QuizReport\ndeactivate Quiz\n\nUI -> DB : insert('quiz_history', {course, score, date})\nactivate DB\nDB --> UI : saved\ndeactivate DB\n\nUI --> Student : عرض تقرير الأداء الذكي\\n(النسبة، المستوى، التوصيات)\n\n== عرض السجل السابق ==\n\nStudent -> UI : طلب عرض الاختبارات السابقة\nUI -> DB : query('quiz_history', {student_id})\nactivate DB\nDB --> UI : List<QuizHistory>\ndeactivate DB\nUI --> Student : عرض سجل الاختبارات السابقة\n\ndeactivate UI\n@enduml"
+    },
+    {
+        "id": 5,
+        "title": "5️⃣ مخطط التسلسل — دفع البيانات المحلية (Offline Sync Push)",
+        "name": "SASP_SequenceDiagram_Sync",
+        "svg_path": "svg\/SASP_SequenceDiagram_Sync.svg",
+        "png_path": "png\/SASP_SequenceDiagram_Sync.png",
+        "explanation": "<p class=\"desc-para\">يوضح عملية دفع البيانات المُنشأة أثناء وضع الأوفلاين (شكوى، رسالة، إيصال دفع) إلى السيرفر عند عودة الاتصال.<\/p>",
+        "raw_uml": "@startuml SASP_SequenceDiagram_Sync\n!theme blueprint\ntitle مخطط التسلسل — رفع المسودات عند عودة الاتصال\n\nskinparam backgroundColor #1a1a2e\nskinparam sequence {\n  ParticipantBackgroundColor #16213e\n  ParticipantBorderColor #0f3460\n  ParticipantFontColor #e0e0e0\n  ArrowColor #e94560\n  LifeLineBorderColor #0f3460\n}\n\nactor \"🎓 الطالب\" as Student\nparticipant \"📱 HomeScreen\" as Home\nparticipant \"⚡ SyncService\" as Sync\nparticipant \"🗄️ DatabaseHelper\" as DB\nparticipant \"🌐 Laravel API\\n\/api\/sync\/*\" as API\n\n== عند انتقال التطبيق للمقدمة ==\n\nStudent -> Home : سحب الشاشة للأسفل\\n(Pull to Refresh)\nactivate Home\nHome -> Sync : syncAll()\nactivate Sync\n\nSync -> DB : getSettings('api_base_url')\nactivate DB\nDB --> Sync : \"http:\/\/192.168.x.x:8000\/api\"\ndeactivate DB\n\nSync -> API : GET \/api\/sync\\nAuthorization: Bearer {token}\nactivate API\n\nalt الاتصال ناجح\n  API --> Sync : 200 OK\\n{settings, courses, materials,\\nannouncements, results, payments}\n  Sync -> DB : syncSnapshot(responseData)\n  activate DB\n  DB --> Sync : done\n  deactivate DB\n\n  == دفع المسودات المحلية ==\n\n  Sync -> DB : getUnsynced('complaints')\n  activate DB\n  DB --> Sync : List<Complaint> (is_synced=0)\n  deactivate DB\n\n  alt توجد شكاوى غير مزامنة\n    Sync -> API : POST \/api\/sync\/complaints\\n{complaints: [...]}\n    API --> Sync : 200 OK {saved: true}\n    Sync -> DB : update complaints\\nset is_synced=1\n  end\n\n  Sync -> DB : getUnsynced('chat_messages')\n  activate DB\n  DB --> Sync : List<ChatMessage>\n  deactivate DB\n\n  alt توجد رسائل غير مزامنة\n    Sync -> API : POST \/api\/sync\/messages\\n{messages: [...]}\n    API --> Sync : 200 OK\n    Sync -> DB : update messages\\nset is_synced=1\n  end\n\n  Sync -> DB : getUnsynced('payments')\n  activate DB\n  DB --> Sync : List<Payment>\n  deactivate DB\n\n  alt توجد مدفوعات غير مزامنة\n    Sync -> API : POST \/api\/sync\/payments\\n{payments: [...]}\n    API --> Sync : 200 OK\n    Sync -> DB : update payments\\nset is_synced=1\n  end\n\n  Sync --> Home : SyncResult(success: true)\n  Home --> Student : ✅ \"تمت المزامنة بنجاح\"\\n(تحديث الواجهة)\n\nelse الاتصال فاشل\n  API --> Sync : Network Error \/ Timeout\n  Sync --> Home : SyncResult(success: false)\n  Home --> Student : ⚠️ \"تعذّر الاتصال\\nتعمل في وضع أوفلاين\"\nend\n\ndeactivate API\ndeactivate Sync\ndeactivate Home\n\n@enduml"
+    },
+    {
+        "id": 6,
+        "title": "6️⃣ مخطط آلة الحالة (State Machine Diagram) — كائن \"الشكوى\"",
+        "name": "SASP_StateMachineDiagram_Complaint",
+        "svg_path": "svg\/SASP_StateMachineDiagram_Complaint.svg",
+        "png_path": "png\/SASP_StateMachineDiagram_Complaint.png",
+        "explanation": "<p class=\"desc-para\">يوضح الحالات المختلفة التي يمر بها كائن `Complaint` منذ إنشائه من قِبل الطالب وحتى حله من قِبل الإدارة، مع توضيح جميع الانتقالات (Transitions) والأحداث المُطلِقة لها.<\/p>",
+        "raw_uml": "@startuml SASP_StateMachineDiagram_Complaint\n!theme blueprint\ntitle مخطط آلة الحالة — دورة حياة الشكوى (Complaint Lifecycle)\n\nskinparam backgroundColor #1a1a2e\nskinparam state {\n  BackgroundColor #16213e\n  BorderColor #0f3460\n  FontColor #e0e0e0\n  ArrowColor #e94560\n  StartColor #e94560\n  EndColor #e94560\n}\n\n[*] --> Draft : الطالب يبدأ كتابة الشكوى\n\nstate Draft : الطالب يملأ الموضوع والوصف\nstate LocalPending : محفوظة محلياً في SQLite\\n is_synced = 0\nstate Pending : مستلمة في قاعدة بيانات السيرفر\\n is_synced = 1\\n تنتظر مراجعة الإدارة\nstate Reviewed : تحت المراجعة من قبل الإدارة\\n معروضة في لوحة التحكم\nstate Resolved : تم حل الشكوى\\n أُضيف رد ونتيجة\nstate Rejected : تم رفض الشكوى\\n مع سبب الرفض\n\nDraft --> LocalPending : تأكيد الإرسال\\n[لا يوجد إنترنت]\n\nDraft --> Pending : تأكيد الإرسال\\n[يوجد إنترنت]\\n\/ POST \/api\/sync\/complaints\n\nLocalPending --> Pending : عودة الإنترنت\\n\/ SyncService.pushDrafts()\\n\/ تحديث is_synced=1\n\nPending --> Reviewed : الإداري يفتح الشكوى\\n\/ تغيير الحالة إلى Reviewed\n\nReviewed --> Resolved : الإداري يضغط \"حل الشكوى\"\\n[مع إضافة الرد]\\n\/ POST \/dashboard\/complaints\/{id}\/resolve\n\nReviewed --> Rejected : الإداري يرفض الشكوى\\n[مع سبب الرفض]\n\nResolved --> [*] : انتهاء دورة الحياة\n\nRejected --> Draft : الطالب يُعدّل ويُعيد الإرسال\n\nnote right of LocalPending\n  يحتفظ التطبيق بالشكوى\n  حتى عودة الإنترنت\n  ثم يرفعها تلقائياً\nend note\n\nnote right of Resolved\n  يستطيع الطالب رؤية\n  حالة شكواه في أي وقت\n  عبر complaints_portal_screen\nend note\n\n@enduml"
+    },
+    {
+        "id": 7,
+        "title": "7️⃣ مخطط آلة الحالة — كائن \"المدفوعات\" (Payment Lifecycle)",
+        "name": "SASP_StateMachineDiagram_Payment",
+        "svg_path": "svg\/SASP_StateMachineDiagram_Payment.svg",
+        "png_path": "png\/SASP_StateMachineDiagram_Payment.png",
+        "explanation": "<p class=\"desc-para\">يوضح دورة حياة كائن `Payment` من لحظة إنشائه بواسطة الطالب حتى تأكيده أو تأخره.<\/p>",
+        "raw_uml": "@startuml SASP_StateMachineDiagram_Payment\n!theme blueprint\ntitle مخطط آلة الحالة — دورة حياة الدفعة (Payment Lifecycle)\n\nskinparam backgroundColor #1a1a2e\nskinparam state {\n  BackgroundColor #16213e\n  BorderColor #0f3460\n  FontColor #e0e0e0\n  ArrowColor #e94560\n}\n\n[*] --> Overdue : انتهاء موعد السداد\\nbefore الدفع\n\n[*] --> Pending : الإدارة تنشئ دفعة جديدة\\n\/ POST \/dashboard\/payments\n\nstate Pending : مبلغ مستحق وينتظر الدفع\\n الطالب يرى الحالة \"معلق\"\nstate ReceiptUploaded : الطالب رفع الإيصال\\n is_synced = 0 (أوفلاين) أو = 1 (أونلاين)\\n تنتظر مراجعة الإدارة\nstate Paid : تأكيد الدفع بواسطة الإدارة\\n سجل دائم في النظام\nstate Overdue : تجاوز موعد السداد\\n يظهر للطالب بالأحمر\\n إشعار تأخر السداد\nstate Rejected : الإيصال غير صحيح\\n مع سبب الرفض\n\nPending --> ReceiptUploaded : الطالب يرفع الإيصال\\n\/ PUT \/api\/sync\/payments\\n{receipt_url, is_synced}\n\nPending --> Overdue : تجاوز تاريخ الاستحقاق\\n\/ Scheduled Job يُغيّر الحالة\n\nOverdue --> ReceiptUploaded : الطالب يرفع الإيصال\\n(رغم التأخر)\n\nReceiptUploaded --> Paid : الإدارة توافق\\n\/ POST \/dashboard\/payments\/{id}\/approve\n\nReceiptUploaded --> Rejected : الإدارة ترفض\\n[الإيصال غير واضح أو غير صحيح]\\n\/ مع إضافة سبب الرفض\n\nRejected --> ReceiptUploaded : الطالب يُعيد رفع إيصال صحيح\n\nPaid --> [*] : انتهاء دورة الحياة (مكتمل)\n\n@enduml"
+    },
+    {
+        "id": 8,
+        "title": "8️⃣ مخطط الكيانات والعلاقات — ERD",
+        "name": "SASP_ERD",
+        "svg_path": "svg\/SASP_ERD.svg",
+        "png_path": "png\/SASP_ERD.png",
+        "explanation": "<p class=\"desc-para\">يوضح التصميم الكامل لقاعدة البيانات العلائقية لخادم Laravel، مع المفاتيح الأساسية والأجنبية وأنواع العلاقات بين الجداول.<\/p>",
+        "raw_uml": "@startuml SASP_ERD\n!theme blueprint\ntitle مخطط الكيانات والعلاقات (ERD) — نظام SASP\n\n' hide the spot\nhide circle\n' avoid problems with angled crows feet\nskinparam linetype ortho\n\nskinparam backgroundColor #1a1a2e\nskinparam class {\n  BackgroundColor #16213e\n  BorderColor #0f3460\n  FontColor #e0e0e0\n  HeaderBackgroundColor #0f3460\n}\n\nentity users {\n  * id : BIGINT <<PK>>\n  --\n  * name : VARCHAR(255)\n  * email : VARCHAR(255) <<unique>>\n  * password : VARCHAR(255)\n  profile_image : VARCHAR(255)\n  thumbnail : VARCHAR(255)\n  * status : TINYINT\n  * role : ENUM\n  phone_number : VARCHAR(20)\n  * must_change_password : TINYINT\n  deleted_at : TIMESTAMP\n  created_at : TIMESTAMP\n  updated_at : TIMESTAMP\n}\n\nentity student_details {\n  * user_id : BIGINT <<PK, FK>>\n  --\n  * university_id : VARCHAR(50) <<unique>>\n  * major : VARCHAR(255)\n  * level : INT\n  * gpa : DOUBLE\n  created_at : TIMESTAMP\n  updated_at : TIMESTAMP\n}\n\nentity courses {\n  * course_id : VARCHAR(50) <<PK>>\n  --\n  * title : VARCHAR(255)\n  description : TEXT\n  doctor_id : BIGINT <<FK>>\n  * credit_hours : INT\n  department : VARCHAR(255)\n  created_at : TIMESTAMP\n  updated_at : TIMESTAMP\n}\n\nentity educational_materials {\n  * material_id : VARCHAR(50) <<PK>>\n  --\n  * course_id : VARCHAR(50) <<FK>>\n  * title : VARCHAR(255)\n  * type : ENUM\n  * file_url : TEXT\n  file_path : VARCHAR(255)\n  file_size : VARCHAR(50)\n  academic_year : VARCHAR(20)\n  semester : VARCHAR(50)\n  department : VARCHAR(255)\n  description : TEXT\n  narrator : VARCHAR(255)\n  duration : VARCHAR(50)\n  image_path : VARCHAR(255)\n  uploaded_at : TIMESTAMP\n  created_at : TIMESTAMP\n  updated_at : TIMESTAMP\n}\n\nentity questions {\n  * question_id : VARCHAR(50) <<PK>>\n  --\n  * course_id : VARCHAR(50) <<FK>>\n  * question_text : TEXT\n  * options : TEXT\n  * correctAnswer : VARCHAR(255)\n  * difficulty_level : ENUM\n  unit_number : INT\n  created_at : TIMESTAMP\n  updated_at : TIMESTAMP\n}\n\nentity sasp_announcements {\n  * announcement_id : VARCHAR(50) <<PK>>\n  --\n  * title : VARCHAR(255)\n  * content : TEXT\n  * author_id : BIGINT <<FK>>\n  * date_posted : TIMESTAMP\n  * target_audience : ENUM\n  image_url : VARCHAR(255)\n  image_extension : VARCHAR(10)\n  created_at : TIMESTAMP\n  updated_at : TIMESTAMP\n}\n\nentity sasp_chat_rooms {\n  * room_id : VARCHAR(50) <<PK>>\n  --\n  * title : VARCHAR(255)\n  * type : ENUM\n  * created_by : BIGINT <<FK>>\n  created_at : TIMESTAMP\n  updated_at : TIMESTAMP\n}\n\nentity sasp_chat_messages {\n  * message_id : VARCHAR(50) <<PK>>\n  --\n  * room_id : VARCHAR(50) <<FK>>\n  * sender_id : BIGINT <<FK>>\n  * sender_name : VARCHAR(255)\n  * message_text : TEXT\n  media_type : VARCHAR(20)\n  media_path : VARCHAR(255)\n  * sent_at : TIMESTAMP\n  * is_synced : INT\n  created_at : TIMESTAMP\n  updated_at : TIMESTAMP\n}\n\nentity results {\n  * result_id : VARCHAR(50) <<PK>>\n  --\n  * student_id : BIGINT <<FK>>\n  * course_id : VARCHAR(50) <<FK>>\n  * course_title : VARCHAR(255)\n  * grade : VARCHAR(10)\n  * semester : VARCHAR(50)\n  created_at : TIMESTAMP\n  updated_at : TIMESTAMP\n}\n\nentity payments {\n  * payment_id : VARCHAR(50) <<PK>>\n  --\n  * student_id : BIGINT <<FK>>\n  * amount : DOUBLE\n  * payment_status : ENUM\n  payment_date : TIMESTAMP\n  receipt_url : TEXT\n  * is_synced : INT\n  created_at : TIMESTAMP\n  updated_at : TIMESTAMP\n}\n\nentity complaints {\n  * complaint_id : VARCHAR(50) <<PK>>\n  --\n  * user_id : BIGINT <<FK>>\n  * subject : VARCHAR(255)\n  * description : TEXT\n  * status : ENUM\n  * submitted_at : TIMESTAMP\n  * is_synced : INT\n  created_at : TIMESTAMP\n  updated_at : TIMESTAMP\n}\n\nentity research_reports {\n  * id : BIGINT <<PK>>\n  --\n  * student_id : BIGINT <<FK>>\n  * title : VARCHAR(255)\n  department : VARCHAR(255)\n  file_url : VARCHAR(255)\n  * status : VARCHAR(50)\n  feedback : TEXT\n  created_at : TIMESTAMP\n  updated_at : TIMESTAMP\n}\n\nentity graduation_projects {\n  * id : BIGINT <<PK>>\n  --\n  * title : VARCHAR(255)\n  description : TEXT\n  students : JSON\n  supervisor : VARCHAR(255)\n  department : VARCHAR(255)\n  year : VARCHAR(10)\n  * status : ENUM\n  created_at : TIMESTAMP\n  updated_at : TIMESTAMP\n}\n\nentity graduation_tasks {\n  * id : BIGINT <<PK>>\n  --\n  * project_id : BIGINT <<FK>>\n  * student_name : VARCHAR(255)\n  * task_title : VARCHAR(255)\n  * status : ENUM\n  created_at : TIMESTAMP\n  updated_at : TIMESTAMP\n}\n\nentity settings {\n  * id : BIGINT <<PK>>\n  --\n  * key : VARCHAR(100) <<unique>>\n  value : TEXT\n  created_at : TIMESTAMP\n  updated_at : TIMESTAMP\n}\n\n' Spatie tables\nentity roles {\n  * id : BIGINT <<PK>>\n  --\n  * name : VARCHAR(255) <<unique>>\n  * guard_name : VARCHAR(255)\n  created_at : TIMESTAMP\n  updated_at : TIMESTAMP\n}\n\nentity permissions {\n  * id : BIGINT <<PK>>\n  --\n  * name : VARCHAR(255) <<unique>>\n  * guard_name : VARCHAR(255)\n  created_at : TIMESTAMP\n  updated_at : TIMESTAMP\n}\n\nentity model_has_roles {\n  * role_id : BIGINT <<FK>>\n  * model_type : VARCHAR(255)\n  * model_id : BIGINT\n}\n\nentity role_has_permissions {\n  * permission_id : BIGINT <<FK>>\n  * role_id : BIGINT <<FK>>\n}\n\n' Relations\nusers ||--|| student_details : \"has profile\"\nusers ||--o{ courses : \"teaches\"\nusers ||--o{ results : \"obtains\"\nusers ||--o{ payments : \"makes\"\nusers ||--o{ complaints : \"files\"\nusers ||--o{ sasp_announcements : \"authors\"\nusers ||--o{ sasp_chat_rooms : \"creates\"\nusers ||--o{ sasp_chat_messages : \"sends\"\nusers ||--o{ research_reports : \"submits\"\n\ncourses ||--o{ educational_materials : \"contains\"\ncourses ||--o{ questions : \"has\"\ncourses ||--o{ results : \"linked to\"\n\nsasp_chat_rooms ||--o{ sasp_chat_messages : \"contains\"\ngraduation_projects ||--o{ graduation_tasks : \"has tasks\"\n\nroles ||--o{ model_has_roles : \"assigned via\"\npermissions ||--o{ role_has_permissions : \"linked via\"\nroles ||--o{ role_has_permissions : \"has\"\nusers ||--o{ model_has_roles : \"has role\"\n\n@enduml"
+    },
+    {
+        "id": 9,
+        "title": "9️⃣ مخطط النشر (Deployment Diagram)",
+        "name": "SASP_DeploymentDiagram",
+        "svg_path": "svg\/SASP_DeploymentDiagram.svg",
+        "png_path": "png\/SASP_DeploymentDiagram.png",
+        "explanation": "<p class=\"desc-para\">يوضح البنية التحتية الكاملة لنظام SASP وكيفية تواصل تطبيق Flutter مع خادم Laravel وقاعدة البيانات، مع توضيح البيئات المختلفة (التطوير والإنتاج).<\/p>",
+        "raw_uml": "@startuml SASP_DeploymentDiagram\n!theme blueprint\ntitle مخطط النشر — بنية نظام SASP\n\nskinparam backgroundColor #1a1a2e\nskinparam node {\n  BackgroundColor #16213e\n  BorderColor #0f3460\n  FontColor #e0e0e0\n}\nskinparam component {\n  BackgroundColor #0f3460\n  BorderColor #e94560\n  FontColor #e0e0e0\n}\nskinparam database {\n  BackgroundColor #16213e\n  BorderColor #e94560\n  FontColor #e0e0e0\n}\nskinparam artifact {\n  BackgroundColor #0f3460\n  BorderColor #e94560\n  FontColor white\n}\nskinparam ArrowColor #e94560\n\n' =============================================\n' CLIENT — MOBILE DEVICE\n' =============================================\nnode \"📱 جهاز الطالب\/الدكتور\\n(Android \/ iOS)\" as MobileDevice {\n\n  node \"Flutter App\\n(Dart\/Flutter 3.x)\" as FlutterApp {\n    component \"🎨 UI Screens\\n(25+ Screen)\" as UIScreens\n    component \"⚡ SyncService\\n(Dio HTTP Client)\" as SyncSvc\n    component \"📐 Business Logic\\n(Models & DTOs)\" as BusinessLogic\n  }\n\n  database \"🗄️ SQLite\\n(Local Database)\" as SQLiteDB {\n    artifact \"users table\"\n    artifact \"courses table\"\n    artifact \"materials table\"\n    artifact \"questions table\"\n    artifact \"results table\"\n    artifact \"payments table\"\n    artifact \"complaints table\"\n    artifact \"chat_messages table\"\n    artifact \"settings table\"\n  }\n\n  UIScreens --> BusinessLogic : calls\n  BusinessLogic --> SyncSvc : sync requests\n  BusinessLogic --> SQLiteDB : read\/write\n  SyncSvc --> SQLiteDB : cache responses\n}\n\n' =============================================\n' CLIENT — ADMIN BROWSER\n' =============================================\nnode \"💻 جهاز الإداري\\n(Windows \/ macOS \/ Linux)\" as AdminDevice {\n\n  node \"🌐 Web Browser\\n(Chrome \/ Firefox \/ Edge)\" as Browser {\n    component \"🎛️ Dashboard Web UI\\n(Laravel Blade + CSS)\" as WebUI\n  }\n}\n\n' =============================================\n' SERVER — DEVELOPMENT ENVIRONMENT\n' =============================================\nnode \"🖥️ خادم التطوير\\n(Windows PC Local)\" as DevServer {\n\n  node \"PHP Runtime\\n(PHP 8.2+)\" as PHPRuntime {\n\n    node \"Laravel 12\\nApplication\" as LaravelApp {\n      component \"🔐 AuthController\\n(Login\/Logout)\" as AuthCtrl\n      component \"📡 SaspApiController\\n(Mobile API)\" as ApiCtrl\n      component \"🎛️ DashboardController\\n(Admin Panel)\" as DashCtrl\n      component \"🛡️ Middleware Layer\\n(Auth + Role + CSRF)\" as MiddlewareLayer\n    }\n  }\n\n  database \"🗄️ SQLite\\n(Development DB)\" as SQLiteDev {\n    artifact \"database.sqlite (~240KB)\"\n  }\n\n  node \"📂 Storage\\n(Laravel Storage)\" as FileStorage {\n    artifact \"public\/materials\/\"\n    artifact \"public\/images\/\"\n    artifact \"public\/receipts\/\"\n  }\n}\n\n' =============================================\n' SERVER — PRODUCTION ENVIRONMENT\n' =============================================\nnode \"☁️ خادم الإنتاج\\n(Cloud VPS \/ Shared Hosting)\" as ProdServer {\n\n  node \"PHP 8.2+ Runtime\" as PHPProd {\n    node \"Laravel 12\\n(Production)\" as LaravelProd {\n      component \"🌐 REST API\\n(\/api\/*)\" as ProdAPI\n      component \"🎛️ Admin Dashboard\\n(\/dashboard\/*)\" as ProdDash\n    }\n  }\n\n  database \"🐬 MySQL 8.0+\\n(Production DB)\" as MySQLProd {\n    artifact \"users\"\n    artifact \"courses\"\n    artifact \"educational_materials\"\n    artifact \"questions\"\n    artifact \"results\"\n    artifact \"payments\"\n    artifact \"complaints\"\n    artifact \"chat_rooms \/ messages\"\n    artifact \"settings\"\n  }\n\n  node \"☁️ Cloud Storage\\n(AWS S3 \/ Local Disk)\" as CloudStorage {\n    artifact \"Uploaded Files\"\n    artifact \"PDF & Audio Books\"\n    artifact \"Payment Receipts\"\n  }\n}\n\n' =============================================\n' COMMUNICATION PROTOCOLS\n' =============================================\nMobileDevice -down-> DevServer : HTTP REST API\\n(JSON)\\nport: 8000\nMobileDevice -down-> ProdServer : HTTPS REST API\\n(JSON)\\nport: 443\n\nAdminDevice -down-> DevServer : HTTP\\n(Browser)\\nport: 8000\nAdminDevice -down-> ProdServer : HTTPS\\n(Browser)\\nport: 443\n\nLaravelApp -right-> SQLiteDev : PDO \/ Eloquent ORM\nLaravelApp -right-> FileStorage : Laravel Storage Facade\n\nLaravelProd -right-> MySQLProd : PDO \/ Eloquent ORM\nLaravelProd -right-> CloudStorage : Storage::disk()\n\nnote bottom of MobileDevice\n  التطبيق يعمل بدون إنترنت\n  عبر SQLite المحلية ويُزامن\n  عند عودة الاتصال\nend note\n\nnote bottom of ProdServer\n  بيئة الإنتاج تستخدم MySQL\n  بدلاً من SQLite مع دعم\n  اتصالات متزامنة ≥ 500\nend note\n\n@enduml"
+    },
+    {
+        "id": 10,
+        "title": "🔟 مخطط الحزم (Package Diagram)",
+        "name": "SASP_PackageDiagram",
+        "svg_path": "svg\/SASP_PackageDiagram.svg",
+        "png_path": "png\/SASP_PackageDiagram.png",
+        "explanation": "<p class=\"desc-para\">يوضح التنظيم المعماري لمكونات نظام SASP والاعتماديات بين الحزم (Packages) في كلٍّ من تطبيق Flutter وخادم Laravel.<\/p>",
+        "raw_uml": "@startuml SASP_PackageDiagram\n!theme blueprint\ntitle مخطط الحزم — بنية مكونات نظام SASP\n\nskinparam backgroundColor #1a1a2e\nskinparam package {\n  BackgroundColor #16213e\n  BorderColor #0f3460\n  FontColor #e0e0e0\n}\nskinparam component {\n  BackgroundColor #0f3460\n  BorderColor #e94560\n  FontColor white\n}\nskinparam ArrowColor #e94560\nskinparam note {\n  BackgroundColor #0f3460\n  BorderColor #e94560\n  FontColor white\n}\n\n' =============================================\n' FLUTTER APP PACKAGES\n' =============================================\npackage \"📱 Flutter Application\" as FlutterApp {\n\n  package \"lib\/theme\" as ThemePkg {\n    component \"app_theme.dart\\n(Colors, Fonts, Material3)\"\n  }\n\n  package \"lib\/core\" as CorePkg {\n    package \"database\" as DBPkg {\n      component \"database_helper.dart\\n(SQLite CRUD)\"\n    }\n    package \"models\" as ModelsPkg {\n      component \"user_model.dart\"\n      component \"course_model.dart\"\n      component \"material_model.dart\"\n      component \"question_model.dart\"\n      component \"result_model.dart\"\n      component \"payment_model.dart\"\n      component \"complaint_model.dart\"\n      component \"chat_model.dart\"\n      component \"settings_model.dart\"\n    }\n    package \"network\" as NetworkPkg {\n      component \"sync_service.dart\\n(Dio HTTP)\"\n    }\n    package \"widgets\" as WidgetsPkg {\n      component \"top_app_bar.dart\"\n      component \"bottom_nav_bar.dart\"\n      component \"navigation_drawer.dart\"\n    }\n  }\n\n  package \"lib\/screens\" as ScreensPkg {\n    package \"auth\" {\n      component \"login_screen.dart\"\n      component \"change_password_screen.dart\"\n    }\n    package \"home\" {\n      component \"home_screen.dart\"\n    }\n    package \"curriculum\" {\n      component \"curriculum_options_screen.dart\"\n      component \"books_pdf_screen.dart\"\n      component \"audio_books_screen.dart\"\n      component \"questions_screen.dart\"\n    }\n    package \"chat\" {\n      component \"chat_portal_screen.dart\"\n      component \"student_forum_screen.dart\"\n      component \"doctors_chat_screen.dart\"\n    }\n    package \"university\" {\n      component \"results_portal_screen.dart\"\n      component \"payments_portal_screen.dart\"\n      component \"complaints_portal_screen.dart\"\n    }\n    package \"ai & tools\" {\n      component \"ai_portal_screen.dart\"\n      component \"ai_tools_screens.dart\"\n    }\n    package \"graduation & research\" {\n      component \"graduation_screen.dart\"\n      component \"research_screen.dart\"\n    }\n    package \"secondary\" {\n      component \"secondary_screens.dart\\n(Settings, Profile)\"\n    }\n  }\n}\n\n' =============================================\n' LARAVEL BACKEND PACKAGES\n' =============================================\npackage \"⚙️ Laravel 12 Backend\" as LaravelApp {\n\n  package \"app\/Http\/Controllers\" as ControllersLayer {\n    component \"AuthController\\n(Web Login)\"\n    component \"SaspApiController\\n(Mobile API)\"\n    component \"DashboardController\\n(Admin Panel)\"\n  }\n\n  package \"app\/Http\/Middleware\" as MiddlewareLayer {\n    component \"CheckRole\\n(Role-based Access)\"\n    component \"VerifyCsrfToken\\n(CSRF Protection)\"\n    component \"Authenticate\\n(Sanctum Token)\"\n  }\n\n  package \"app\/Models\" as ModelsLayer {\n    component \"User\"\n    component \"StudentDetail\"\n    component \"Course\"\n    component \"EducationalMaterial\"\n    component \"Question\"\n    component \"Announcement\"\n    component \"ChatRoom \/ ChatMessage\"\n    component \"Result\"\n    component \"Payment\"\n    component \"Complaint\"\n    component \"ResearchReport\"\n    component \"GraduationProject\"\n    component \"Setting\"\n  }\n\n  package \"database\" as DatabaseLayer {\n    package \"migrations\" {\n      component \"create_users_table\"\n      component \"create_academy_tables\"\n      component \"create_extended_content_tables\"\n    }\n    package \"seeders\" {\n      component \"RolePermissionSeeder\"\n      component \"UserSeeder\"\n      component \"DatabaseSeeder\"\n    }\n  }\n\n  package \"routes\" as RoutesLayer {\n    component \"web.php\\n(Dashboard Routes)\"\n    component \"api.php\\n(API Routes)\"\n  }\n\n  package \"resources\/views\" as ViewsLayer {\n    component \"dashboard\/*.blade.php\"\n    component \"auth\/*.blade.php\"\n    component \"layouts\/*.blade.php\"\n  }\n\n  package \"storage\" as StorageLayer {\n    component \"public\/materials\"\n    component \"public\/images\"\n    component \"public\/receipts\"\n  }\n}\n\n' =============================================\n' EXTERNAL DEPENDENCIES\n' =============================================\npackage \"📦 External Packages (Flutter)\" as FlutterDeps {\n  component \"sqflite\\n(SQLite)\"\n  component \"dio\\n(HTTP Client)\"\n  component \"google_fonts\\n(Typography)\"\n  component \"image_picker\\n(Gallery\/Camera)\"\n  component \"file_picker\\n(File Manager)\"\n  component \"shared_preferences\"\n}\n\npackage \"📦 External Packages (Laravel)\" as LaravelDeps {\n  component \"laravel\/sanctum\\n(API Authentication)\"\n  component \"spatie\/laravel-permission\\n(Roles & Permissions)\"\n  component \"spatie\/laravel-activitylog\\n(Activity Log)\"\n  component \"spatie\/laravel-backup\\n(Backup)\"\n  component \"maatwebsite\/excel\\n(Excel Export)\"\n  component \"intervention\/image\\n(Image Processing)\"\n}\n\n' =============================================\n' DEPENDENCIES\n' =============================================\nScreensPkg --> CorePkg : uses\nCorePkg --> ThemePkg : uses\nNetworkPkg --> ModelsPkg : serializes\nDBPkg --> ModelsPkg : stores\/retrieves\n\nControllersLayer --> ModelsLayer : manipulates\nControllersLayer --> MiddlewareLayer : protected by\nRoutesLayer --> ControllersLayer : routes to\nControllersLayer --> ViewsLayer : renders\nControllersLayer --> StorageLayer : stores files\nModelsLayer --> DatabaseLayer : migrated\/seeded\n\nFlutterApp ..> FlutterDeps : depends on\nLaravelApp ..> LaravelDeps : depends on\n\nFlutterApp ..> LaravelApp : REST API\\n(JSON over HTTP\/HTTPS)\n\n@enduml"
+    }
+];
+
+        let activeId = 1;
+        let zoomLevel = 100;
+        let isDarkBackground = true;
+        
+        // Pan & Zoom state
+        let isDragging = false;
+        let startX, startY, translateX = 0, translateY = 0;
+        
+        const diagramListEl = document.getElementById('diagramList');
+        const searchBar = document.getElementById('searchBar');
+        const currentTitleEl = document.getElementById('currentTitle');
+        const diagramImageEl = document.getElementById('diagramImage');
+        const downloadSvgEl = document.getElementById('downloadSvg');
+        const downloadPngEl = document.getElementById('downloadPng');
+        const diagramExplanationEl = document.getElementById('diagramExplanation');
+        const rawUmlCodeEl = document.getElementById('rawUmlCode');
+        const copyCodeBtn = document.getElementById('copyCodeBtn');
+        const toastEl = document.getElementById('toast');
+        const bgToggleBtn = document.getElementById('bgToggle');
+        
+        const container = document.getElementById('diagramContainer');
+        const viewport = document.getElementById('viewport');
+        const zoomBadge = document.getElementById('zoomBadge');
+
+        // Initialize App
+        function init() {
+            renderList(DIAGRAMS_DATA);
+            loadDiagram(activeId);
+            setupEventListeners();
+        }
+
+        // Render Sidebar Menu
+        function renderList(items) {
+            diagramListEl.innerHTML = '';
+            items.forEach(item => {
+                const li = document.createElement('li');
+                li.className = `diagram-item ${item.id === activeId ? 'active' : ''}`;
+                li.setAttribute('data-id', item.id);
+                li.innerHTML = `
+                    <div class="diagram-number">${item.id}</div>
+                    <div class="diagram-item-info">
+                        <div class="diagram-item-title">${item.title.replace(/^\d+️⃣?\s*/, '')}</div>
+                    </div>
+                `;
+                li.addEventListener('click', () => {
+                    document.querySelectorAll('.diagram-item').forEach(el => el.classList.remove('active'));
+                    li.classList.add('active');
+                    loadDiagram(item.id);
+                });
+                diagramListEl.appendChild(li);
+            });
+        }
+
+        // Load Diagram details
+        function loadDiagram(id) {
+            activeId = id;
+            const diagram = DIAGRAMS_DATA.find(d => d.id === id);
+            if (!diagram) return;
+
+            currentTitleEl.innerHTML = `<i class="fa-solid fa-diagram-project" style="color: var(--accent-color);"></i> ${diagram.title}`;
+            diagramImageEl.src = diagram.svg_path;
+            
+            // Wait for image load to center it and reset transform
+            diagramImageEl.onload = function() {
+                resetZoom();
+            };
+
+            downloadSvgEl.href = diagram.svg_path;
+            downloadPngEl.href = diagram.png_path;
+            diagramExplanationEl.innerHTML = diagram.explanation;
+            rawUmlCodeEl.textContent = diagram.raw_uml;
+            
+            // Sync active item in sidebar if search was active
+            document.querySelectorAll('.diagram-item').forEach(el => {
+                if (parseInt(el.getAttribute('data-id')) === id) {
+                    el.classList.add('active');
+                } else {
+                    el.classList.remove('active');
+                }
+            });
+        }
+
+        // Tabs switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Activate current
+            event.currentTarget.classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+        // Search feature
+        searchBar.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = DIAGRAMS_DATA.filter(d => 
+                d.title.toLowerCase().includes(query) || 
+                d.raw_uml.toLowerCase().includes(query)
+            );
+            renderList(filtered);
+        });
+
+        // Setup Zoom & Pan
+        function setupEventListeners() {
+            // Zoom Controls
+            document.getElementById('zoomIn').addEventListener('click', () => zoom(1.2));
+            document.getElementById('zoomOut').addEventListener('click', () => zoom(0.8));
+            document.getElementById('zoomReset').addEventListener('click', resetZoom);
+            
+            // Toggle Background color behind image
+            bgToggleBtn.addEventListener('click', () => {
+                isDarkBackground = !isDarkBackground;
+                if (isDarkBackground) {
+                    viewport.style.background = 'radial-gradient(circle at center, rgba(17, 24, 39, 0.3) 0%, rgba(11, 15, 25, 0.8) 100%)';
+                    diagramImageEl.style.filter = 'drop-shadow(0 10px 20px rgba(0,0,0,0.5))';
+                } else {
+                    viewport.style.background = '#ffffff';
+                    diagramImageEl.style.filter = 'none';
+                }
+            });
+
+            // Dragging (Panning)
+            container.addEventListener('mousedown', (e) => {
+                if (e.target.tagName === 'BUTTON') return;
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+                container.style.transition = 'none'; // Disable transition during drag
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                translateX = e.clientX - startX;
+                translateY = e.clientY - startY;
+                updateTransform();
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    container.style.transition = 'transform 0.1s ease-out';
+                }
+            });
+
+            // Wheel zoom
+            viewport.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+                zoom(zoomFactor);
+            });
+
+            // Copy Code
+            copyCodeBtn.addEventListener('click', () => {
+                const umlText = rawUmlCodeEl.textContent;
+                navigator.clipboard.writeText(umlText).then(() => {
+                    showToast('تم نسخ الكود الأكاديمي بنجاح');
+                });
+            });
+        }
+
+        function zoom(factor) {
+            const nextZoom = Math.round(zoomLevel * factor);
+            if (nextZoom >= 20 && nextZoom <= 500) {
+                zoomLevel = nextZoom;
+                zoomBadge.textContent = `${zoomLevel}%`;
+                updateTransform();
+            }
+        }
+
+        function resetZoom() {
+            zoomLevel = 100;
+            translateX = 0;
+            translateY = 0;
+            zoomBadge.textContent = '100%';
+            updateTransform();
+        }
+
+        function updateTransform() {
+            container.style.transform = `translate(${translateX}px, ${translateY}px) scale(${zoomLevel / 100})`;
+        }
+
+        function showToast(msg) {
+            document.getElementById('toastMsg').textContent = msg;
+            toastEl.classList.add('show');
+            setTimeout(() => {
+                toastEl.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
