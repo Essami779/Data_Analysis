@@ -270,6 +270,18 @@
             background-position: 0 0, 12px 12px;
         }
 
+        /* Fullscreen styles to ensure backdrop matches layout */
+        .canvas-viewport:fullscreen {
+            width: 100% !important;
+            height: 100% !important;
+            background-color: var(--bg-color);
+        }
+        .canvas-viewport:-webkit-full-screen {
+            width: 100% !important;
+            height: 100% !important;
+            background-color: var(--bg-color);
+        }
+
         .diagram-container {
             width: 90%;
             height: 90%;
@@ -598,6 +610,12 @@
                     <span>الخلفية</span>
                 </button>
                 
+                <!-- Fullscreen Toggle -->
+                <button class="btn" id="fullscreenToggle" title="ملء الشاشة">
+                    <i class="fa-solid fa-expand"></i>
+                    <span>ملء الشاشة</span>
+                </button>
+                
                 <!-- Download SVG -->
                 <a href="#" class="btn btn-primary" id="downloadSvg" download>
                     <i class="fa-solid fa-file-image"></i>
@@ -624,6 +642,7 @@
                 <div class="zoom-badge" id="zoomBadge">100%</div>
                 <button class="control-btn" id="zoomIn" title="تكبير"><i class="fa-solid fa-plus"></i></button>
                 <button class="control-btn" id="zoomReset" title="إعادة ضبط"><i class="fa-solid fa-arrows-to-eye"></i></button>
+                <button class="control-btn" id="floatFullscreenToggle" title="ملء الشاشة"><i class="fa-solid fa-expand"></i></button>
             </div>
         </div>
     </main>
@@ -886,12 +905,82 @@
             renderList(filtered);
         });
 
+        // Fullscreen functionality
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                if (viewport.requestFullscreen) {
+                    viewport.requestFullscreen();
+                } else if (viewport.mozRequestFullScreen) {
+                    viewport.mozRequestFullScreen();
+                } else if (viewport.webkitRequestFullscreen) {
+                    viewport.webkitRequestFullscreen();
+                } else if (viewport.msRequestFullscreen) {
+                    viewport.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
         // Setup Zoom & Pan
         function setupEventListeners() {
             // Zoom Controls
             document.getElementById('zoomIn').addEventListener('click', () => zoom(1.2));
             document.getElementById('zoomOut').addEventListener('click', () => zoom(0.8));
             document.getElementById('zoomReset').addEventListener('click', resetZoom);
+            
+            // Fullscreen Controls
+            const fullscreenToggleBtn = document.getElementById('fullscreenToggle');
+            const floatFullscreenToggleBtn = document.getElementById('floatFullscreenToggle');
+
+            function updateFullscreenUI() {
+                const isFullscreen = !!document.fullscreenElement;
+                const iconClass = isFullscreen ? 'fa-compress' : 'fa-expand';
+                const text = isFullscreen ? 'شاشة عادية' : 'ملء الشاشة';
+                const titleText = isFullscreen ? 'خروج من ملء الشاشة' : 'ملء الشاشة';
+
+                if (fullscreenToggleBtn) {
+                    const iconEl = fullscreenToggleBtn.querySelector('i');
+                    const textEl = fullscreenToggleBtn.querySelector('span');
+                    if (iconEl) iconEl.className = `fa-solid ${iconClass}`;
+                    if (textEl) textEl.textContent = text;
+                    fullscreenToggleBtn.title = titleText;
+                }
+                
+                if (floatFullscreenToggleBtn) {
+                    const iconEl = floatFullscreenToggleBtn.querySelector('i');
+                    if (iconEl) iconEl.className = `fa-solid ${iconClass}`;
+                    floatFullscreenToggleBtn.title = titleText;
+                }
+            }
+
+            if (fullscreenToggleBtn) {
+                fullscreenToggleBtn.addEventListener('click', toggleFullscreen);
+            }
+            if (floatFullscreenToggleBtn) {
+                floatFullscreenToggleBtn.addEventListener('click', toggleFullscreen);
+            }
+
+            // Double click to toggle fullscreen on viewport (excluding controls)
+            viewport.addEventListener('dblclick', (e) => {
+                if (e.target.closest('.control-btn') || e.target.closest('.btn') || e.target.closest('.floating-controls')) {
+                    return;
+                }
+                toggleFullscreen();
+            });
+
+            document.addEventListener('fullscreenchange', updateFullscreenUI);
+            document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
+            document.addEventListener('mozfullscreenchange', updateFullscreenUI);
+            document.addEventListener('MSFullscreenChange', updateFullscreenUI);
             
             // Toggle Background color behind image
             bgToggleBtn.addEventListener('click', () => {
