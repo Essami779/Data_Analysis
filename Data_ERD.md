@@ -1,6 +1,6 @@
 # 🏗️ وثيقة المخططات الهندسية — UML Diagrams
 ## مشروع SASP — بوابة الطالب الأكاديمية الذكية
-### Smart Academic Student Portal — جامعة سبأ
+### Smart Academic Student Portal — الجامعة
 
 > **تاريخ الإصدار:** 27 يونيو 2026 | **الإصدار:** 1.0
 > **المنهجية:** Object-Oriented Systems Analysis & Design (OOAD)
@@ -1769,4 +1769,4 @@ FlutterApp ..> LaravelApp : REST API\n(JSON over HTTP/HTTPS)
 
 ---
 
-*تم إعداد هذه الوثيقة بتاريخ 27 يونيو 2026 — مشروع SASP — جامعة سبأ*
+*تم إعداد هذه الوثيقة بتاريخ 27 يونيو 2026 — مشروع SASP — الجامعة*
