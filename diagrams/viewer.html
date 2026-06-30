@@ -26,6 +26,10 @@
             --sidebar-width: 320px;
             --right-panel-width: 400px;
             --glass-blur: 16px;
+            --control-btn-bg: rgba(17, 24, 39, 0.85);
+            --control-btn-color: #f3f4f6;
+            --control-btn-hover: #3b82f6;
+            --search-bg: rgba(0, 0, 0, 0.2);
         }
 
         [data-theme="light"] {
@@ -37,6 +41,10 @@
             --accent-color: #2563eb;
             --accent-glow: rgba(37, 99, 235, 0.3);
             --accent-hover: #1d4ed8;
+            --control-btn-bg: rgba(255, 255, 255, 0.9);
+            --control-btn-color: #111827;
+            --control-btn-hover: #2563eb;
+            --search-bg: rgba(255, 255, 255, 0.6);
         }
 
         * {
@@ -107,7 +115,7 @@
             padding: 12px 36px 12px 16px;
             border-radius: 8px;
             border: 1px solid var(--panel-border);
-            background: rgba(0, 0, 0, 0.2);
+            background: var(--search-bg);
             color: var(--text-primary);
             font-family: inherit;
             font-size: 0.9rem;
@@ -324,19 +332,20 @@
             height: 36px;
             border-radius: 50%;
             border: 1px solid var(--panel-border);
-            background: rgba(17, 24, 39, 0.8);
-            color: var(--text-primary);
+            background: var(--control-btn-bg);
+            color: var(--control-btn-color);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 0.9rem;
             outline: none;
+            transition: all 0.2s ease;
         }
 
         .control-btn:hover {
-            background: var(--accent-color);
-            color: white;
+            background: var(--control-btn-hover);
+            color: #ffffff;
             border-color: transparent;
         }
 
@@ -344,9 +353,9 @@
             padding: 0 12px;
             height: 36px;
             border-radius: 18px;
-            background: rgba(17, 24, 39, 0.8);
+            background: var(--control-btn-bg);
             border: 1px solid var(--panel-border);
-            color: var(--text-primary);
+            color: var(--control-btn-color);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -606,25 +615,33 @@
             <div class="actions-group">
                 <!-- Background Toggle -->
                 <button class="btn" id="bgToggle" title="تغيير لون خلفية المخطط">
-                    <i class="fa-solid fa-circle-half-stroke"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px; display: block;">
+                        <path d="M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10V2z"/>
+                    </svg>
                     <span>الخلفية</span>
                 </button>
                 
                 <!-- Fullscreen Toggle -->
                 <button class="btn" id="fullscreenToggle" title="ملء الشاشة">
-                    <i class="fa-solid fa-expand"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; display: block;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75h4.5m-4.5 0v4.5m0-4.5L9 9m11.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15M3.75 20.25h4.5m-4.5 0v-4.5m0 4.5L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9" />
+                    </svg>
                     <span>ملء الشاشة</span>
                 </button>
                 
                 <!-- Download SVG -->
                 <a href="#" class="btn btn-primary" id="downloadSvg" download>
-                    <i class="fa-solid fa-file-image"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; display: block;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
                     <span>تنزيل SVG</span>
                 </a>
                 
                 <!-- Download PNG -->
                 <a href="#" class="btn" id="downloadPng" download>
-                    <i class="fa-solid fa-image"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; display: block;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375 0 11-.75 0 .375 0 01.75 0z" />
+                    </svg>
                     <span>تنزيل PNG</span>
                 </a>
             </div>
@@ -638,11 +655,28 @@
 
             <!-- Floating Controls -->
             <div class="floating-controls glass-panel">
-                <button class="control-btn" id="zoomOut" title="تصغير"><i class="fa-solid fa-minus"></i></button>
+                <button class="control-btn" id="zoomOut" title="تصغير">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:16px; height:16px; display:block;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
+                    </svg>
+                </button>
                 <div class="zoom-badge" id="zoomBadge">100%</div>
-                <button class="control-btn" id="zoomIn" title="تكبير"><i class="fa-solid fa-plus"></i></button>
-                <button class="control-btn" id="zoomReset" title="إعادة ضبط"><i class="fa-solid fa-arrows-to-eye"></i></button>
-                <button class="control-btn" id="floatFullscreenToggle" title="ملء الشاشة"><i class="fa-solid fa-expand"></i></button>
+                <button class="control-btn" id="zoomIn" title="تكبير">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:16px; height:16px; display:block;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                </button>
+                <button class="control-btn" id="zoomReset" title="إعادة ضبط">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:16px; height:16px; display:block;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                </button>
+                <button class="control-btn" id="floatFullscreenToggle" title="ملء الشاشة">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:16px; height:16px; display:block;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75h4.5m-4.5 0v4.5m0-4.5L9 9m11.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15M3.75 20.25h4.5m-4.5 0v-4.5m0 4.5L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9" />
+                    </svg>
+                </button>
             </div>
         </div>
     </main>
@@ -651,7 +685,7 @@
     <aside class="detail-panel glass-panel">
         <div class="panel-tab-header">
             <button class="tab-btn active" onclick="switchTab('desc')"><i class="fa-solid fa-align-right" style="margin-left:6px;"></i>الشرح والتحليل</button>
-            <button class="tab-btn" onclick="switchTab('code')"><i class="fa-solid fa-code" style="margin-left:6px;"></i>كود المصدر (UML)</button>
+            <button class="tab-btn" onclick="switchTab('code')" style="display: none;"><i class="fa-solid fa-code" style="margin-left:6px;"></i>كود المصدر (UML)</button>
         </div>
 
         <div class="tab-content-container">
@@ -662,7 +696,7 @@
                     <!-- Dynamic explanation -->
                 </div>
                 
-                <div class="detail-section-title" style="margin-top:30px;">معلومات إضافية</div>
+                <!-- <div class="detail-section-title" style="margin-top:30px;">معلومات إضافية</div>
                 <div class="quick-info-grid">
                     <div class="info-card">
                         <div class="info-card-icon"><i class="fa-solid fa-compass-drafting"></i></div>
@@ -685,7 +719,7 @@
                             <p>الجامعة — اليمن</p>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <!-- Code Tab -->
@@ -900,7 +934,7 @@
             const query = e.target.value.toLowerCase();
             const filtered = DIAGRAMS_DATA.filter(d => 
                 d.title.toLowerCase().includes(query) || 
-                d.raw_uml.toLowerCase().includes(query)
+                d.explanation.toLowerCase().includes(query)
             );
             renderList(filtered);
         });
@@ -949,15 +983,35 @@
 
                 if (fullscreenToggleBtn) {
                     const iconEl = fullscreenToggleBtn.querySelector('i');
+                    const svgEl = fullscreenToggleBtn.querySelector('svg');
                     const textEl = fullscreenToggleBtn.querySelector('span');
                     if (iconEl) iconEl.className = `fa-solid ${iconClass}`;
+                    if (svgEl) {
+                        if (isFullscreen) {
+                            // compress path
+                            svgEl.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9L4.5 4.5M9 9V4.5M9 9H4.5m6 6l4.5 4.5m-4.5-4.5v4.5m0-4.5h4.5M9 15l-4.5 4.5M9 15v4.5M9 15H4.5m6-6l4.5-4.5m-4.5 4.5V4.5m0 4.5h4.5" />';
+                        } else {
+                            // expand path
+                            svgEl.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.75 3.75h4.5m-4.5 0v4.5m0-4.5L9 9m11.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15M3.75 20.25h4.5m-4.5 0v-4.5m0 4.5L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9" />';
+                        }
+                    }
                     if (textEl) textEl.textContent = text;
                     fullscreenToggleBtn.title = titleText;
                 }
                 
                 if (floatFullscreenToggleBtn) {
                     const iconEl = floatFullscreenToggleBtn.querySelector('i');
+                    const svgEl = floatFullscreenToggleBtn.querySelector('svg');
                     if (iconEl) iconEl.className = `fa-solid ${iconClass}`;
+                    if (svgEl) {
+                        if (isFullscreen) {
+                            // compress path
+                            svgEl.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9L4.5 4.5M9 9V4.5M9 9H4.5m6 6l4.5 4.5m-4.5-4.5v4.5m0-4.5h4.5M9 15l-4.5 4.5M9 15v4.5M9 15H4.5m6-6l4.5-4.5m-4.5 4.5V4.5m0 4.5h4.5" />';
+                        } else {
+                            // expand path
+                            svgEl.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.75 3.75h4.5m-4.5 0v4.5m0-4.5L9 9m11.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15M3.75 20.25h4.5m-4.5 0v-4.5m0 4.5L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9" />';
+                        }
+                    }
                     floatFullscreenToggleBtn.title = titleText;
                 }
             }
