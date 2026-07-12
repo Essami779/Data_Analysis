@@ -4,11 +4,6 @@
 
 | الاسم (Name) | البريد الإلكتروني (Email) | معرف تسجيل الدخول (Login ID / Username) | كلمة المرور الافتراضية (Password) | الدور (Role) |
 | :--- | :--- | :--- | :--- | :--- |
-| المهندس صالح محمد (الإدارة) | admin@saba.edu.ye | **admin@saba.edu.ye** | `admin@2026` | Admin |
-| د. أحمد علي عبد الرحمن | dr.ahmed@saba.edu.ye | **dr.ahmed@saba.edu.ye** | `dr.ahmed@2026` | Doctor |
-| عبد الله صالح العواضي | std.abdullah@saba.edu.ye | **202210145** | `123456` | Student |
-| محمد سليمان | moh@saba.deu.ye | **moh@saba.deu.ye** | `moh@2026` | Doctor |
-| عصام الخطيب | essami@saba.edu.ye | **202011111** | `123456` | Student |
 | Super Admin | superadmin@sasp.un.deu.ye | **superadmin@sasp.un.deu.ye** | `superadmin@2026` | SuperAdmin |
 | Admin 1 | admin1@sasp.un.deu.ye | **admin1@sasp.un.deu.ye** | `admin1@2026` | Admin |
 | Admin 2 | admin2@sasp.un.deu.ye | **admin2@sasp.un.deu.ye** | `admin2@2026` | Admin |
