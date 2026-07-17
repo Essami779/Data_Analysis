@@ -2671,28 +2671,11 @@ skinparam note {
 ' =============================================
 package "📱 Flutter Application" as FlutterApp {
 
-  package "lib/theme" as ThemePkg {
-    component "app_theme.dart\n(Colors, Fonts, Material3)"
-  }
-
   package "lib/core" as CorePkg {
-    package "database" as DBPkg {
-      component "database_helper.dart\n(SQLite CRUD)"
-    }
-    package "models" as ModelsPkg {
-      component "user_model.dart"
-      component "course_model.dart"
-      component "material_model.dart"
-      component "question_model.dart"
-      component "result_model.dart"
-      component "payment_model.dart"
-      component "complaint_model.dart"
-      component "chat_model.dart"
-      component "settings_model.dart"
-    }
-    package "network" as NetworkPkg {
-      component "sync_service.dart\n(Dio HTTP)"
-    }
+    component "app_theme.dart\n(Colors, Fonts, Material3)"
+    component "database_helper.dart\n(SQLite CRUD)"
+    component "sync_service.dart\n(Dio HTTP)"
+    component "config/app_config.dart"
     package "widgets" as WidgetsPkg {
       component "top_app_bar.dart"
       component "bottom_nav_bar.dart"
@@ -2700,10 +2683,10 @@ package "📱 Flutter Application" as FlutterApp {
     }
   }
 
-  package "lib/screens" as ScreensPkg {
+  package "lib/features" as FeaturesPkg {
     package "auth" {
       component "login_screen.dart"
-      component "change_password_screen.dart"
+      component "change_password_dialog.dart"
     }
     package "home" {
       component "home_screen.dart"
@@ -2717,23 +2700,30 @@ package "📱 Flutter Application" as FlutterApp {
     package "chat" {
       component "chat_portal_screen.dart"
       component "student_forum_screen.dart"
-      component "doctors_chat_screen.dart"
     }
     package "university" {
       component "results_portal_screen.dart"
       component "payments_portal_screen.dart"
       component "complaints_portal_screen.dart"
     }
-    package "ai & tools" {
+    package "ai" {
       component "ai_portal_screen.dart"
       component "ai_tools_screens.dart"
     }
-    package "graduation & research" {
+    package "graduation" {
       component "graduation_screen.dart"
       component "research_screen.dart"
     }
-    package "secondary" {
-      component "secondary_screens.dart\n(Settings, Profile)"
+    package "admin" {
+      component "admin_dashboard_screen.dart"
+    }
+    package "profile" {
+      component "profile_screen.dart"
+    }
+    package "settings" {
+      component "settings_screen.dart"
+      component "about_screen.dart"
+      component "support_screen.dart"
     }
   }
 }
@@ -2743,62 +2733,55 @@ package "📱 Flutter Application" as FlutterApp {
 ' =============================================
 package "⚙️ Laravel 12 Backend" as LaravelApp {
 
-  package "app/Http/Controllers" as ControllersLayer {
-    component "AuthController\n(Web Login)"
-    component "SaspApiController\n(Mobile API)"
-    component "DashboardController\n(Admin Panel)"
+  package "app/Modules" as ModulesLayer {
+    package "Auth" {
+      component "LoginController"
+      component "AuthService"
+      component "User Model"
+    }
+    package "Student" {
+      component "StudentController"
+      component "StudentService"
+      component "StudentDetail Model"
+    }
+    package "Chat" {
+      component "ConversationController"
+      component "Conversation Model"
+      component "Message Model"
+    }
+    package "Curriculum" {
+      component "MaterialController"
+      component "MaterialService"
+      component "Course Model"
+    }
+    package "University" {
+      component "ResultController"
+      component "PaymentController"
+      component "ComplaintController"
+      component "AttendanceController"
+    }
+    package "Graduation" {
+      component "GraduationController"
+    }
+    package "Setting" {
+      component "SettingController"
+    }
   }
 
   package "app/Http/Middleware" as MiddlewareLayer {
-    component "CheckRole\n(Role-based Access)"
-    component "VerifyCsrfToken\n(CSRF Protection)"
+    component "CheckRole"
     component "Authenticate\n(Sanctum Token)"
   }
 
-  package "app/Models" as ModelsLayer {
-    component "User"
-    component "StudentDetail"
-    component "Course"
-    component "EducationalMaterial"
-    component "Question"
-    component "Announcement"
-    component "ChatRoom / ChatMessage"
-    component "Result"
-    component "Payment"
-    component "Complaint"
-    component "ResearchReport"
-    component "GraduationProject"
-    component "Setting"
-  }
-
   package "database" as DatabaseLayer {
-    package "migrations" {
-      component "create_users_table"
-      component "create_academy_tables"
-      component "create_extended_content_tables"
-    }
-    package "seeders" {
-      component "RolePermissionSeeder"
-      component "UserSeeder"
-      component "DatabaseSeeder"
-    }
+    component "migrations"
+    component "seeders"
   }
 
   package "routes" as RoutesLayer {
-    component "web.php\n(Dashboard Routes)"
-    component "api.php\n(API Routes)"
-  }
-
-  package "resources/views" as ViewsLayer {
-    component "dashboard/*.blade.php"
-    component "auth/*.blade.php"
-    component "layouts/*.blade.php"
-  }
-
-  package "storage" as StorageLayer {
-    component "public/materials"
-    component "public/images"
-    component "public/receipts"
+    component "web.php\n(General Web)"
+    component "auth.php\n(Web Auth)"
+    component "sasp.php\n(SASP Web/API)"
   }
 }
 
